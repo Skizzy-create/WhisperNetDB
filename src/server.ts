@@ -13,7 +13,7 @@ export const roomDB = new roomDatabase();
 // export { roomDB };
 export async function createApp(): Promise<Application> {
     const app: Application = express();
-    // app.use(cors()); no need as only postman is used now
+    // app.use(cors()); no need as only postman is used now.
     app.use(countRequest);
     app.use(countTime);
     app.use(express.json());
