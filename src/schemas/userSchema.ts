@@ -11,9 +11,11 @@ import zod from 'zod';
 
 const createUserSchema = zod.object({
     username: zod.string(),
-    uid: zod.string(),
     password: zod.string().min(6),
     dateOfJoining: zod.date(),
     RoomId: zod.array(zod.string()).optional(),
-    socketId: zod.string().optional(),
 });
+
+export {
+    createUserSchema
+};

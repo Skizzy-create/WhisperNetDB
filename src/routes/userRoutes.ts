@@ -1,6 +1,7 @@
 import express from 'express';
 import { Request, Response, Router } from 'express';
 import { userDB } from '../server';
+import { validateUserSignIp } from '../middlewares/usersSchemaValidators';
 const router: Router = express.Router();
 
 router.get("/", (req, res) => {
@@ -9,11 +10,11 @@ router.get("/", (req, res) => {
     });
 });
 // @ts-ignore
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', validateUserSignIp, async (req: Request, res: Response) => {
     try {
         const username: string = req.body.username;
         const password = req.body.password;
-        const dateOfJoining = req.body.dateOfJoining;
+        const dateOfJoining: Date = new Date(req.body.dateOfJoining);
         const RoomId = req.body.RoomId;
         const user = await userDB.createUser(username, password, dateOfJoining, RoomId);
         if (user === null) {

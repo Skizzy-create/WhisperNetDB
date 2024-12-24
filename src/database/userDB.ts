@@ -66,7 +66,7 @@ class userDatabase {
         if (abort) {
             console.log("Aborting user creation!");
             return null;
-        }
+        };
         const user: User = { username, uid: hashedUid, dateOfJoining, RoomId, password: hashedPassword };
         this.users.push(user);
         console.log("User created successfully!");

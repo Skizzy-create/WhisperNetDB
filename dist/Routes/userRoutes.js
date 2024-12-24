@@ -14,17 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const server_1 = require("../server");
+const usersSchemaValidators_1 = require("../middlewares/usersSchemaValidators");
 const router = express_1.default.Router();
 router.get("/", (req, res) => {
     res.json({
         msg: "User Router"
     });
 });
-router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/register', usersSchemaValidators_1.validateUserSignIp, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const username = req.body.username;
         const password = req.body.password;
-        const dateOfJoining = req.body.dateOfJoining;
+        const dateOfJoining = new Date(req.body.dateOfJoining);
         const RoomId = req.body.RoomId;
         const user = yield server_1.userDB.createUser(username, password, dateOfJoining, RoomId);
         if (user === null) {
