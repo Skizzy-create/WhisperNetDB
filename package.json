@@ -1,0 +1,22 @@
+{
+  "name": "whispernetdb",
+  "version": "1.0.0",
+  "description": "The backend of WhisperNet, comes with the in-memory DB for the whispertNet, and it is also a http server which get the requests for operations for whispernet",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc -b && nodemon dist/server.js"
+  },
+  "author": "Skizzy-Create (kartik Aslia)",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^5.0.0"
+  }
+}
