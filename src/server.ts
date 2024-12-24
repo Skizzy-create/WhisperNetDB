@@ -4,7 +4,7 @@ import userDatabase from './database/userDB.js';
 
 const PORT = 8080
 const userDB = new userDatabase();
-function main() {
+async function main() {
     const app: Application = express();
     app.use(express.json());
     app.use('/api/v1', mainRoute);
@@ -13,9 +13,18 @@ function main() {
         res.json({ msg: 'main page' });
     });
 
+    await userDB.loadUsers();
+    console.log("Creating admin user...");
+    const newUser = await userDB.createUser(
+        "admin",
+        "admin",
+        new Date(),
+        []
+    );
+    console.log(newUser);
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
-    })
+    });
 };
 main();
 export { userDB };

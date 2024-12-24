@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const generateUID = (USERNAME_1, PASSWORD_1, ...args_1) => __awaiter(void 0, [USERNAME_1, PASSWORD_1, ...args_1], void 0, function* (USERNAME, PASSWORD, TYPE = "USER") {
+    console.log("Generating UID...");
     const type = TYPE.toLowerCase();
     const salt = yield bcrypt_1.default.genSalt(10);
     const finalString = `${type}-${USERNAME.toLowerCase()}-${PASSWORD.toLowerCase()}`;

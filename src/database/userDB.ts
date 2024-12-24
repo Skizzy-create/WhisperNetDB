@@ -18,10 +18,9 @@ class userDatabase {
 
     constructor() {
         console.log("User Database initialized!");
-        this.loadUsers();
     };
 
-    private loadUsers = async (): Promise<void> => {
+    public loadUsers = async (): Promise<void> => {
         console.log("Loading User data ....");
         try {
             const data = await fs.promises.readFile("data.json", "utf-8");

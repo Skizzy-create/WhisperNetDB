@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 // USERNAME, doj using hash function
 
 const generateUID = async (USERNAME: string, PASSWORD: string, TYPE: "USER" = "USER"): Promise<string> => {
+    console.log("Generating UID...");
     const type = TYPE.toLowerCase();
     const salt = await bcrypt.genSalt(10);
     const finalString = `${type}-${USERNAME.toLowerCase()}-${PASSWORD.toLowerCase()}`;

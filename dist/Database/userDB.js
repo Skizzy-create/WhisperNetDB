@@ -140,7 +140,6 @@ class userDatabase {
             }
         });
         console.log("User Database initialized!");
-        this.loadUsers();
     }
     ;
 }
