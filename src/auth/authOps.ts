@@ -13,6 +13,18 @@ const hashPassword = async (password: string): Promise<string> => {
     };
 };
 
+const comparePassword = async (hashPassword: string, password: string): Promise<boolean | null> => {
+    try {
+        return await bcrypt.compare(password, hashPassword);
+    } catch (error) {
+        console.log("Error while comparing password");
+        console.error(error);
+        return null;
+    }
+    return null;
+};
+
 export {
-    hashPassword
+    hashPassword,
+    comparePassword
 }

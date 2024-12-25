@@ -30,8 +30,6 @@ function main() {
         });
         yield userDB.loadUsers();
         console.log("Creating admin user...");
-        const newUser = yield userDB.createUser("admin", "admin", new Date(), []);
-        console.log(newUser);
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
         });

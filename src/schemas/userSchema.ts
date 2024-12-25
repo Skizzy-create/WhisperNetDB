@@ -16,6 +16,12 @@ const createUserSchema = zod.object({
     RoomId: zod.array(zod.string()).optional(),
 });
 
+const loginUserSchema = zod.object({
+    username: zod.string(),
+    password: zod.string().min(6),
+});
+
 export {
-    createUserSchema
+    createUserSchema,
+    loginUserSchema
 };

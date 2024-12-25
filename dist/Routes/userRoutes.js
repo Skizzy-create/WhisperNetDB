@@ -21,7 +21,7 @@ router.get("/", (req, res) => {
         msg: "User Router"
     });
 });
-router.post('/register', usersSchemaValidators_1.validateUserSignIp, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/register', usersSchemaValidators_1.validateUserSignUp, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const username = req.body.username;
         const password = req.body.password;
@@ -30,21 +30,47 @@ router.post('/register', usersSchemaValidators_1.validateUserSignIp, (req, res) 
         const user = yield server_1.userDB.createUser(username, password, dateOfJoining, RoomId);
         if (user === null) {
             return res.status(400).json({
-                msg: "User already exists! / Invalid data"
+                msg: "User already exists! / Invalid data",
             });
         }
-        ;
         console.log(user);
-        return res.json({
+        res.json({
             msg: "User created successfully!",
-            user: user
+            user: user,
         });
     }
     catch (error) {
         console.error(error);
-        res.status(500).json({
-            msg: "Internal Server Error!"
+        return res.status(500).json({
+            msg: "Internal Server Error! -- User register Route",
+            error: error
         });
     }
+    ;
+}));
+router.post("/login", usersSchemaValidators_1.validateUserLogin, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const username = req.body.username;
+        const password = req.body.password;
+        const uid = yield server_1.userDB.loginUser(username, password);
+        if (uid === null) {
+            return res.status(400).json({
+                msg: "Invalid username or password!",
+            });
+        }
+        ;
+        return res.status(200).json({
+            msg: "User logged in successfully!",
+            uid: uid,
+        });
+    }
+    catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            msg: "Internal Server Error! -- User register Route",
+            error: error
+        });
+    }
+    ;
 }));
 exports.default = router;

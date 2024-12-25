@@ -1,4 +1,5 @@
 "use strict";
+// File: /d:/Projects/WhisperNet/src/util/generateUID.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
+// creates UID for users & guest, based on the type of user,
+// USERNAME, doj using hash function
 const generateUID = (USERNAME_1, PASSWORD_1, ...args_1) => __awaiter(void 0, [USERNAME_1, PASSWORD_1, ...args_1], void 0, function* (USERNAME, PASSWORD, TYPE = "USER") {
     console.log("Generating UID...");
     const type = TYPE.toLowerCase();

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.hashPassword = void 0;
+exports.comparePassword = exports.hashPassword = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -29,3 +29,15 @@ const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* (
     ;
 });
 exports.hashPassword = hashPassword;
+const comparePassword = (hashPassword, password) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield bcrypt_1.default.compare(password, hashPassword);
+    }
+    catch (error) {
+        console.log("Error while comparing password");
+        console.error(error);
+        return null;
+    }
+    return null;
+});
+exports.comparePassword = comparePassword;

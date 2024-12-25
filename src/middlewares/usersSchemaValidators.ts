@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { SafeParseReturnType } from "zod";
-import { createUserSchema } from "../schemas/userSchema";
+import { createUserSchema, loginUserSchema } from "../schemas/userSchema";
 
-const validateUserSignIp = (req: Request, res: Response, next: NextFunction) => {
+const validateUserSignUp = (req: Request, res: Response, next: NextFunction): any => {
     const username = req.body.username;
     const password = req.body.password;
     const dateOfJoining = new Date(req.body.dateOfJoining);
@@ -13,7 +13,7 @@ const validateUserSignIp = (req: Request, res: Response, next: NextFunction) => 
             username: username,
             password: password,
             dateOfJoining: dateOfJoining,
-            RoomId: RoomId
+            RoomId: RoomId,
         });
 
         console.log("Signup Route Called");
@@ -23,18 +23,50 @@ const validateUserSignIp = (req: Request, res: Response, next: NextFunction) => 
             return res.status(400).json({
                 msg: "Invalid data!",
                 errors: isValid.error,
-                success: false
+                success: false,
             });
-        };
-        next();
+        }
+
+        next(); // Call next() to pass control to the next middleware
     } catch (error) {
         console.error(error);
-        return res.status(400).json({
-            msg: "Invalid data!"
+        res.status(400).json({
+            msg: "Invalid data!",
         });
-    };
+    }
 };
 
-export {
-    validateUserSignIp
+const validateUserLogin = (req: Request, res: Response, next: NextFunction): any => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    try {
+        const isValid: SafeParseReturnType<any, any> = loginUserSchema.safeParse({
+            username: username,
+            password: password,
+        });
+
+        console.log("Login Route Called");
+        console.log("isValid zod  = " + isValid.success);
+
+        if (!isValid.success) {
+            return res.status(400).json({
+                msg: "Invalid data!",
+                errors: isValid.error,
+                success: false,
+            });
+        }
+
+        next(); // Call next() to pass control to the next middleware
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({
+            msg: "Invalid data!",
+        });
+    }
 }
+
+export {
+    validateUserSignUp,
+    validateUserLogin
+};

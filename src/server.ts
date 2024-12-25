@@ -15,13 +15,6 @@ async function main() {
 
     await userDB.loadUsers();
     console.log("Creating admin user...");
-    const newUser = await userDB.createUser(
-        "admin",
-        "admin",
-        new Date(),
-        []
-    );
-    console.log(newUser);
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
     });

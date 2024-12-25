@@ -2,7 +2,7 @@
 
 import fs from 'fs';
 import generateUID from "../util/generateUID.js";
-import { hashPassword } from "../auth/authOps.js";
+import { comparePassword, hashPassword } from "../auth/authOps.js";
 
 interface User {
     username: string;
@@ -73,6 +73,20 @@ class userDatabase {
         return user;
     };
 
+    public loginUser = async (username: string, password: string): Promise<string | null> => {
+        const userExists = this.findOne({ username: username });
+        if (!userExists || userExists === undefined || userExists === null || !userExists.password || !userExists.uid) {
+            return null;
+        };
+        const isValid = await comparePassword(userExists.password, password);
+        if (!isValid) {
+            console.log("Invalid password! -- Login User");
+            return null;
+        };
+        console.log("User logged in successfully!");
+        return userExists.uid;
+    };
+
     private fetchUserId = async (username: string,): Promise<string | null> => {
         try {
             console.log("Fetching user ID...");
@@ -91,7 +105,7 @@ class userDatabase {
         }
     };
 
-    public findOne = (criteria: Partial<User>, matchAll: boolean = false): Partial<User> | null => {
+    private findOne = (criteria: Partial<User>, matchAll: boolean = true): Partial<User> | null => {
         console.log("Looking for one user...");
         try {
             const user = this.users.find((user) => {
@@ -136,6 +150,7 @@ export default userDatabase;
 // checkDuplicateUser ✅
 // createUser ✅
 // fetchUserId ✅
+// loginUser
 // findOne
 // findUserById
 // deleteUser

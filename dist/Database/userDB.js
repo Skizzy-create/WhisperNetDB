@@ -1,4 +1,5 @@
 "use strict";
+// /d:/Projects/WhisperNet/src/Database/userDB.ts
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -83,6 +84,21 @@ class userDatabase {
             yield this.logDataTofile();
             return user;
         });
+        this.loginUser = (username, password) => __awaiter(this, void 0, void 0, function* () {
+            const userExists = this.findOne({ username: username });
+            if (!userExists || userExists === undefined || userExists === null || !userExists.password || !userExists.uid) {
+                return null;
+            }
+            ;
+            const isValid = yield (0, authOps_js_1.comparePassword)(userExists.password, password);
+            if (!isValid) {
+                console.log("Invalid password! -- Login User");
+                return null;
+            }
+            ;
+            console.log("User logged in successfully!");
+            return userExists.uid;
+        });
         this.fetchUserId = (username) => __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log("Fetching user ID...");
@@ -101,7 +117,7 @@ class userDatabase {
                 return null;
             }
         });
-        this.findOne = (criteria, matchAll = false) => {
+        this.findOne = (criteria, matchAll = true) => {
             console.log("Looking for one user...");
             try {
                 const user = this.users.find((user) => {
@@ -144,3 +160,14 @@ class userDatabase {
     ;
 }
 exports.default = userDatabase;
+// Function names from the UserDatabase class
+// checkDuplicateUser ✅
+// createUser ✅
+// fetchUserId ✅
+// loginUser
+// findOne
+// findUserById
+// deleteUser
+// updateUser
+// listAllUsers
+// findAll
