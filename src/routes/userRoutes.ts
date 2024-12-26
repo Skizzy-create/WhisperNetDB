@@ -2,6 +2,7 @@ import express from 'express';
 import { Request, Response, Router } from 'express';
 import { userDB } from '../server';
 import { validateUserLogin, validateUserSignUp } from '../middlewares/usersSchemaValidators';
+import { generateToken } from '../auth/authOps';
 const router: Router = express.Router();
 
 router.get("/", (req, res) => {
@@ -25,9 +26,16 @@ router.post('/register', validateUserSignUp, async (req: Request, res: Response)
         }
 
         console.log(user);
+        const Token = generateToken(username, user.uid);
+        if (Token === null) {
+            return res.status(500).json({
+                msg: "Internal Server Error! -- User register Route",
+            });
+        };
         res.json({
             msg: "User created successfully!",
             user: user,
+            Token: Token
         });
     } catch (error) {
         console.error(error);
@@ -48,9 +56,16 @@ router.post("/login", validateUserLogin, async (req: Request, res: Response): Pr
                 msg: "Invalid username or password!",
             });
         };
+        const token = generateToken(username, uid);
+        if (token === null) {
+            return res.status(500).json({
+                msg: "Internal Server Error! -- User register Route",
+            });
+        }
         return res.status(200).json({
             msg: "User logged in successfully!",
             uid: uid,
+            Token: token
         });
     } catch (error) {
         console.error(error);

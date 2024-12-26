@@ -14,13 +14,24 @@ interface User {
 };
 
 class userDatabase {
-    private users: User[] = [];
+    public users: User[] = [];
 
     constructor() {
         console.log("User Database initialized!");
     };
 
     public loadUsers = async (): Promise<void> => {
+        // write the file if it does not exist
+        try {
+            console.log("Checking if data file exists...");
+            await fs.promises.access("data.json");
+            console.log("Data file exists!");
+        } catch (error) {
+            console.log("Data file does not exist!");
+            console.log("Creating data file...");
+            await fs.promises.writeFile("data.json", "[]");
+            console.log("Data file created successfully!");
+        }
         console.log("Loading User data ....");
         try {
             const data = await fs.promises.readFile("data.json", "utf-8");
@@ -39,7 +50,6 @@ class userDatabase {
 
     public checkDuplicateUser = async (username: string,): Promise<boolean> => {
         try {
-            await this.logDataTofile();
             console.log("Checking for duplicate users...");
             const user = this.users.find((user) => user.username === username);
             if (user) {
@@ -59,13 +69,13 @@ class userDatabase {
 
     public createUser = async (username: string, password: string, dateOfJoining: Date, RoomId: string[]): Promise<User | null> => {
         console.log("Initializing Create User...");
-        const hashedPassword = await hashPassword(password);
         const abort = await this.checkDuplicateUser(username,);
-        const hashedUid = await generateUID(username, password,);
         if (abort) {
             console.log("Aborting user creation!");
             return null;
         };
+        const hashedPassword = await hashPassword(password);
+        const hashedUid = await generateUID(username, password,);
         const user: User = { username, uid: hashedUid, dateOfJoining, RoomId, password: hashedPassword };
         this.users.push(user);
         console.log("User created successfully!");
@@ -87,17 +97,15 @@ class userDatabase {
         return userExists.uid;
     };
 
-    private fetchUserId = async (username: string,): Promise<string | null> => {
+    public fetchUserId = async (username: string,): Promise<string | null> => {
         try {
             console.log("Fetching user ID...");
             const userId = this.users.find((user) => user.username === username);
             if (userId) {
                 console.log("User ID found!");
-                await this.logDataTofile();
                 return userId.uid;
             }
             console.log("User ID not found!");
-            await this.logDataTofile();
             return null;
         } catch (error) {
             console.log("Error fetching user ID");

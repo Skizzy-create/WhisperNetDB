@@ -29,10 +29,18 @@ function main() {
             res.json({ msg: 'main page' });
         });
         yield userDB.loadUsers();
-        console.log("Creating admin user...");
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
         });
+        // total users in DB count
+        console.log("Total Users = ", userDB.users.length);
+        // chekcing time to create user
+        const start = Date.now();
+        yield userDB.createUser("test01", "test", new Date(), []);
+        const end = Date.now();
+        console.log(`Time taken to create user: ${end - start}ms`);
+        console.log(`Time taken to create user: ${(end - start) / 1000} seconds`);
+        console.log(`Time taken to create user: ${(end - start) / 60000} mins`);
     });
 }
 ;

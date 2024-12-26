@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const server_1 = require("../server");
 const usersSchemaValidators_1 = require("../middlewares/usersSchemaValidators");
+const authOps_1 = require("../auth/authOps");
 const router = express_1.default.Router();
 router.get("/", (req, res) => {
     res.json({
@@ -34,9 +35,17 @@ router.post('/register', usersSchemaValidators_1.validateUserSignUp, (req, res) 
             });
         }
         console.log(user);
+        const Token = (0, authOps_1.generateToken)(username, user.uid);
+        if (Token === null) {
+            return res.status(500).json({
+                msg: "Internal Server Error! -- User register Route",
+            });
+        }
+        ;
         res.json({
             msg: "User created successfully!",
             user: user,
+            Token: Token
         });
     }
     catch (error) {
@@ -59,9 +68,16 @@ router.post("/login", usersSchemaValidators_1.validateUserLogin, (req, res) => _
             });
         }
         ;
+        const token = (0, authOps_1.generateToken)(username, uid);
+        if (token === null) {
+            return res.status(500).json({
+                msg: "Internal Server Error! -- User register Route",
+            });
+        }
         return res.status(200).json({
             msg: "User logged in successfully!",
             uid: uid,
+            Token: token
         });
     }
     catch (error) {

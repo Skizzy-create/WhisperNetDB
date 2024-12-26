@@ -32,6 +32,18 @@ class userDatabase {
     constructor() {
         this.users = [];
         this.loadUsers = () => __awaiter(this, void 0, void 0, function* () {
+            // write the file if it does not exist
+            try {
+                console.log("Checking if data file exists...");
+                yield fs_1.default.promises.access("data.json");
+                console.log("Data file exists!");
+            }
+            catch (error) {
+                console.log("Data file does not exist!");
+                console.log("Creating data file...");
+                yield fs_1.default.promises.writeFile("data.json", "[]");
+                console.log("Data file created successfully!");
+            }
             console.log("Loading User data ....");
             try {
                 const data = yield fs_1.default.promises.readFile("data.json", "utf-8");
@@ -50,7 +62,6 @@ class userDatabase {
         });
         this.checkDuplicateUser = (username) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.logDataTofile();
                 console.log("Checking for duplicate users...");
                 const user = this.users.find((user) => user.username === username);
                 if (user) {
@@ -70,18 +81,18 @@ class userDatabase {
         });
         this.createUser = (username, password, dateOfJoining, RoomId) => __awaiter(this, void 0, void 0, function* () {
             console.log("Initializing Create User...");
-            const hashedPassword = yield (0, authOps_js_1.hashPassword)(password);
             const abort = yield this.checkDuplicateUser(username);
-            const hashedUid = yield (0, generateUID_js_1.default)(username, password);
             if (abort) {
                 console.log("Aborting user creation!");
                 return null;
             }
             ;
+            const hashedPassword = yield (0, authOps_js_1.hashPassword)(password);
+            const hashedUid = yield (0, generateUID_js_1.default)(username, password);
             const user = { username, uid: hashedUid, dateOfJoining, RoomId, password: hashedPassword };
             this.users.push(user);
             console.log("User created successfully!");
-            yield this.logDataTofile();
+            // await this.logDataTofile();
             return user;
         });
         this.loginUser = (username, password) => __awaiter(this, void 0, void 0, function* () {
@@ -105,11 +116,9 @@ class userDatabase {
                 const userId = this.users.find((user) => user.username === username);
                 if (userId) {
                     console.log("User ID found!");
-                    yield this.logDataTofile();
                     return userId.uid;
                 }
                 console.log("User ID not found!");
-                yield this.logDataTofile();
                 return null;
             }
             catch (error) {
