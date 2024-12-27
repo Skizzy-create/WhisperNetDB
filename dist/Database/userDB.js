@@ -27,37 +27,58 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = __importDefault(require("fs"));
 const generateUID_js_1 = __importDefault(require("../util/generateUID.js"));
 const authOps_js_1 = require("../auth/authOps.js");
+const jsonstream_next_1 = __importDefault(require("jsonstream-next"));
+const stream_1 = require("stream");
 ;
 class userDatabase {
     constructor() {
         this.users = [];
-        this.loadUsers = () => __awaiter(this, void 0, void 0, function* () {
-            // write the file if it does not exist
+        this.dataPath = 'data.json';
+        this.ensureDataFileExists = () => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Checking if data file exists...");
-                yield fs_1.default.promises.access("data.json");
-                console.log("Data file exists!");
-            }
-            catch (error) {
-                console.log("Data file does not exist!");
-                console.log("Creating data file...");
-                yield fs_1.default.promises.writeFile("data.json", "[]");
-                console.log("Data file created successfully!");
-            }
-            console.log("Loading User data ....");
-            try {
-                const data = yield fs_1.default.promises.readFile("data.json", "utf-8");
-                if (!data) {
-                    console.log("No data found!");
-                    return;
+                if (!fs_1.default.existsSync(this.dataPath)) {
+                    yield fs_1.default.promises.writeFile(this.dataPath, '[]');
+                    console.log('Data file created successfully!');
                 }
-                const users = JSON.parse(data);
-                this.users = users;
-                console.log("User loaded sucessfully!");
             }
             catch (error) {
-                console.log("Error while loading users!");
-                console.error(error);
+                console.error('Error ensuring data file exists:', error);
+                throw error;
+            }
+        });
+        this.loadUsers = () => __awaiter(this, void 0, void 0, function* () {
+            try {
+                // Check and create file if doesn't exist
+                yield this.ensureDataFileExists();
+                // Create read stream
+                const readStream = fs_1.default.createReadStream(this.dataPath, { encoding: 'utf-8' });
+                const jsonStream = jsonstream_next_1.default.parse('*'); // Parse all top-level array elements
+                // Process users in chunks
+                const processingStream = new stream_1.Transform({
+                    objectMode: true,
+                    transform: (user, _, callback) => {
+                        this.users.push(user);
+                        callback();
+                    }
+                });
+                // Handle stream events
+                return new Promise((resolve, reject) => {
+                    readStream
+                        .pipe(jsonStream)
+                        .pipe(processingStream)
+                        .on('finish', () => {
+                        console.log(`Loaded ${this.users.length} users successfully!`);
+                        resolve();
+                    })
+                        .on('error', (error) => {
+                        console.error('Error while loading users:', error);
+                        reject(error);
+                    });
+                });
+            }
+            catch (error) {
+                console.error('Error in loadUsers:', error);
+                throw error;
             }
         });
         this.checkDuplicateUser = (username) => __awaiter(this, void 0, void 0, function* () {
@@ -112,17 +133,17 @@ class userDatabase {
         });
         this.fetchUserId = (username) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Fetching user ID...");
+                // console.log("Fetching user ID...");
                 const userId = this.users.find((user) => user.username === username);
                 if (userId) {
-                    console.log("User ID found!");
+                    // console.log("User ID found!");
                     return userId.uid;
                 }
-                console.log("User ID not found!");
+                // console.log("User ID not found!");
                 return null;
             }
             catch (error) {
-                console.log("Error fetching user ID");
+                // console.log("Error fetching user ID");
                 return null;
             }
         });

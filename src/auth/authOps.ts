@@ -59,7 +59,7 @@ const verifyToken = (token: string): string | null | JwtPayload => {
         console.error(error);
         return null;
     };
-}
+};
 
 export {
     hashPassword,

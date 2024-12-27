@@ -29,6 +29,24 @@ async function main() {
     console.log(`Time taken to create user: ${end - start}ms`);
     console.log(`Time taken to create user: ${(end - start) / 1000} seconds`);
     console.log(`Time taken to create user: ${(end - start) / 60000} mins`);
+
+    const start2 = Date.now();
+    await testFetching();
+    const end2 = Date.now();
+    console.log(`Time taken to fetch 10K user: ${end2 - start2}ms`);
+    console.log(`Time taken to fetch 10K user: ${(end2 - start2) / 1000} seconds`);
+    console.log(`Time taken to fetch 10K user: ${(end2 - start2) / 60000} mins`);
+
 };
 main();
 export { userDB };
+
+async function testFetching() {
+    console.log("test in progress");
+    // get a random number from - to 10,000,000 and append with the users tring
+    for (let i = 0; i < 100000; i++) {
+        const randomNumber = Math.floor(Math.random() * 1000000);
+        const username = `user${randomNumber}`;
+        const userId = await userDB.fetchUserId(username);
+    }
+}

@@ -3,6 +3,8 @@
 import fs from 'fs';
 import generateUID from "../util/generateUID.js";
 import { comparePassword, hashPassword } from "../auth/authOps.js";
+import JSONStream from 'jsonstream-next';
+import { Transform } from 'stream';
 
 interface User {
     username: string;
@@ -13,38 +15,63 @@ interface User {
     socketId?: string;
 };
 
+
 class userDatabase {
     public users: User[] = [];
+    private dataPath: string = 'data.json';
 
     constructor() {
         console.log("User Database initialized!");
     };
 
-    public loadUsers = async (): Promise<void> => {
-        // write the file if it does not exist
+
+    private ensureDataFileExists = async (): Promise<void> => {
         try {
-            console.log("Checking if data file exists...");
-            await fs.promises.access("data.json");
-            console.log("Data file exists!");
-        } catch (error) {
-            console.log("Data file does not exist!");
-            console.log("Creating data file...");
-            await fs.promises.writeFile("data.json", "[]");
-            console.log("Data file created successfully!");
-        }
-        console.log("Loading User data ....");
-        try {
-            const data = await fs.promises.readFile("data.json", "utf-8");
-            if (!data) {
-                console.log("No data found!");
-                return;
+            if (!fs.existsSync(this.dataPath)) {
+                await fs.promises.writeFile(this.dataPath, '[]');
+                console.log('Data file created successfully!');
             }
-            const users = JSON.parse(data);
-            this.users = users;
-            console.log("User loaded sucessfully!");
         } catch (error) {
-            console.log("Error while loading users!");
-            console.error(error);
+            console.error('Error ensuring data file exists:', error);
+            throw error;
+        }
+    };
+    public loadUsers = async (): Promise<void> => {
+        try {
+            // Check and create file if doesn't exist
+            await this.ensureDataFileExists();
+
+            // Create read stream
+            const readStream = fs.createReadStream(this.dataPath, { encoding: 'utf-8' });
+            const jsonStream = JSONStream.parse('*'); // Parse all top-level array elements
+
+            // Process users in chunks
+            const processingStream = new Transform({
+                objectMode: true,
+                transform: (user: User, _, callback) => {
+                    this.users.push(user);
+                    callback();
+                }
+            });
+
+            // Handle stream events
+            return new Promise((resolve, reject) => {
+                readStream
+                    .pipe(jsonStream)
+                    .pipe(processingStream)
+                    .on('finish', () => {
+                        console.log(`Loaded ${this.users.length} users successfully!`);
+                        resolve();
+                    })
+                    .on('error', (error) => {
+                        console.error('Error while loading users:', error);
+                        reject(error);
+                    });
+            });
+
+        } catch (error) {
+            console.error('Error in loadUsers:', error);
+            throw error;
         }
     };
 
@@ -79,7 +106,7 @@ class userDatabase {
         const user: User = { username, uid: hashedUid, dateOfJoining, RoomId, password: hashedPassword };
         this.users.push(user);
         console.log("User created successfully!");
-        await this.logDataTofile();
+        // await this.logDataTofile();
         return user;
     };
 
@@ -99,16 +126,16 @@ class userDatabase {
 
     public fetchUserId = async (username: string,): Promise<string | null> => {
         try {
-            console.log("Fetching user ID...");
+            // console.log("Fetching user ID...");
             const userId = this.users.find((user) => user.username === username);
             if (userId) {
-                console.log("User ID found!");
+                // console.log("User ID found!");
                 return userId.uid;
             }
-            console.log("User ID not found!");
+            // console.log("User ID not found!");
             return null;
         } catch (error) {
-            console.log("Error fetching user ID");
+            // console.log("Error fetching user ID");
             return null;
         }
     };
