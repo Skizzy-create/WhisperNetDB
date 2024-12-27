@@ -15,9 +15,8 @@ interface User {
     socketId?: string;
 };
 
-
 class userDatabase {
-    public users: User[] = [];
+    private users: User[] = [];
     private dataPath: string = 'data.json';
 
     constructor() {
@@ -38,6 +37,7 @@ class userDatabase {
     };
     public loadUsers = async (): Promise<void> => {
         try {
+            console.log("Loading users...");
             // Check and create file if doesn't exist
             await this.ensureDataFileExists();
 
@@ -68,7 +68,6 @@ class userDatabase {
                         reject(error);
                     });
             });
-
         } catch (error) {
             console.error('Error in loadUsers:', error);
             throw error;
