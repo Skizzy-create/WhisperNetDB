@@ -1,11 +1,14 @@
 import express, { Application } from 'express';
 import mainRoute from './routes/index.js'
 import userDatabase from './database/userDB.js';
+import roomDatabase from './database/roomDB.js';
 
 const PORT = 8080
 const userDB = new userDatabase();
+const roomDB = new roomDatabase();
 async function main() {
     const app: Application = express();
+
     app.use(express.json());
     app.use('/api/v1', mainRoute);
     app.use(express.urlencoded({ extended: true }));
@@ -39,7 +42,10 @@ async function main() {
 
 };
 main();
-export { userDB };
+export {
+    userDB,
+    roomDB
+};
 
 // async function testFetching() {
 //     console.log("test in progress");

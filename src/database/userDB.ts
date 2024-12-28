@@ -74,7 +74,7 @@ class userDatabase {
         }
     };
 
-    public checkDuplicateUser = async (username: string,): Promise<boolean> => {
+    private checkDuplicateUser = (username: string,): boolean => {
         try {
             console.log("Checking for duplicate users...");
             const user = this.users.find((user) => user.username === username);
@@ -87,7 +87,7 @@ class userDatabase {
             console.log("User does not exist!");
             return false;
         } catch (error) {
-            console.log("Error while checking for duplicate users!");
+            console.log("Error while chec   king for duplicate users!");
             console.error(error);
             return true;
         }
@@ -95,14 +95,19 @@ class userDatabase {
 
     public createUser = async (username: string, password: string, dateOfJoining: Date, RoomId: string[]): Promise<User | null> => {
         console.log("Initializing Create User...");
-        const abort = await this.checkDuplicateUser(username,);
-        if (abort) {
+        if (this.checkDuplicateUser(username,)) {
             console.log("Aborting user creation!");
             return null;
         };
         const hashedPassword = await hashPassword(password);
         const hashedUid = await generateUID(username, password,);
-        const user: User = { username, uid: hashedUid, dateOfJoining, RoomId, password: hashedPassword };
+        const user: User = {
+            username, uid:
+                hashedUid,
+            dateOfJoining,
+            RoomId,
+            password: hashedPassword
+        };
         this.users.push(user);
         console.log("User created successfully!");
         // await this.logDataTofile();
@@ -111,7 +116,7 @@ class userDatabase {
 
     public loginUser = async (username: string, password: string): Promise<string | null> => {
         const userExists = this.findOne({ username: username });
-        if (!userExists || userExists === undefined || userExists === null || !userExists.password || !userExists.uid) {
+        if (!userExists || !userExists.password || !userExists.uid) {
             return null;
         };
         const isValid = await comparePassword(userExists.password, password);
@@ -123,23 +128,23 @@ class userDatabase {
         return userExists.uid;
     };
 
-    public fetchUserId = async (username: string,): Promise<string | null> => {
+    private fetchUserId = async (username: string,): Promise<string | null> => {
         try {
-            // console.log("Fetching user ID...");
+            console.log("Fetching user ID...");
             const userId = this.users.find((user) => user.username === username);
             if (userId) {
-                // console.log("User ID found!");
+                console.log("User ID found!");
                 return userId.uid;
             }
-            // console.log("User ID not found!");
+            console.log("User ID not found!");
             return null;
         } catch (error) {
-            // console.log("Error fetching user ID");
+            console.log("Error fetching user ID");
             return null;
         }
     };
 
-    private findOne = (criteria: Partial<User>, matchAll: boolean = true): Partial<User> | null => {
+    public findOne = (criteria: Partial<User>, matchAll: boolean = true): Partial<User> | null => {
         console.log("Looking for one user...");
         try {
             const user = this.users.find((user) => {
@@ -176,7 +181,29 @@ class userDatabase {
             console.error(error);
         }
     };
-}
+
+    public findAll = (criterial: Partial<User>) => {
+        console.log("Finding all users...");
+        try {
+            const users = this.users.filter((user) => {
+                const conditions = [
+                    criterial.username ? user.username === criterial.username : true,
+                    criterial.uid ? user.uid === criterial.uid : true,
+                    criterial.dateOfJoining ? user.dateOfJoining === criterial.dateOfJoining : true,
+                    criterial.socketId ? user.socketId === criterial.socketId : true,
+                ];
+                return conditions.every(Boolean);
+            });
+            console.log("Users found!");
+            console.log(users);
+            return users;
+        } catch (error) {
+            console.log("Error while finding all users!");
+            console.error(error);
+            return null;
+        };
+    };
+};
 
 export default userDatabase;
 

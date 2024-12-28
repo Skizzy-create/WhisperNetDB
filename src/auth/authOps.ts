@@ -26,8 +26,7 @@ const comparePassword = async (hashPassword: string, password: string): Promise<
         console.log("Error while comparing password");
         console.error(error);
         return null;
-    }
-    return null;
+    };
 };
 
 const generateToken = (USERNAME: string, UID: string): string | null => {
