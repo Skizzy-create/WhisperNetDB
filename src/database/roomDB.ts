@@ -7,7 +7,7 @@ interface Room {
 
 class roomDatabase {
     private rooms: Room[] = [];
-    private dataPath: string = 'rooms.json';
+    private dataPathRooms: string = 'rooms.json';
 
     constructor() {
         console.log("Room Database initialized!");

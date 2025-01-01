@@ -5,6 +5,8 @@ import generateUID from "../util/generateUID.js";
 import { comparePassword, hashPassword } from "../auth/authOps.js";
 import JSONStream from 'jsonstream-next';
 import { Transform } from 'stream';
+import { roomDB } from '../server.js';
+
 
 interface User {
     username: string;
@@ -128,7 +130,7 @@ class userDatabase {
         return userExists.uid;
     };
 
-    private fetchUserId = async (username: string,): Promise<string | null> => {
+    private fetchUserId = (username: string): string | null => {
         try {
             console.log("Fetching user ID...");
             const userId = this.users.find((user) => user.username === username);
@@ -203,6 +205,26 @@ class userDatabase {
             return null;
         };
     };
+
+    public findUserById = (uid: string): User | null => {
+        console.log("Finding user by ID...");
+        try {
+            const user = this.users.find((user) => user.uid === uid);
+            if (!user) {
+                console.log("User not found!");
+                return null;
+            }
+            console.log("User found!");
+            console.log(user);
+            return user;
+        } catch (error) {
+            console.log("Error while finding user by ID!");
+            console.error(error);
+            return null;
+        };
+    };
+
+
 };
 
 export default userDatabase;
@@ -211,9 +233,9 @@ export default userDatabase;
 // checkDuplicateUser ✅
 // createUser ✅
 // fetchUserId ✅
-// loginUser
-// findOne
-// findUserById
+// loginUser ✅
+// findOne ✅
+// findUserById ✅
 // deleteUser
 // updateUser
 // listAllUsers
