@@ -224,6 +224,55 @@ class userDatabase {
         };
     };
 
+    public deleteUser = (uid: string): boolean => {
+        console.log("Deleting user...");
+        try {
+            const userIndex = this.users.findIndex((user) => user.uid === uid);
+            if (userIndex === -1) {
+                console.log("User not found!");
+                return false;
+            }
+            this.users.splice(userIndex, 1); // splice(starting index, number of elements to remove)
+            console.log("User deleted successfully!");
+            return true;
+        } catch (error) {
+            console.log("Error while deleting user!");
+            console.error(error);
+            return false;
+        };
+    };
+
+    public updateUser = (uid: string, updatedUser: Partial<User>): User | null => {
+        console.log("Updating user...");
+        try {
+            const userIndex = this.users.findIndex((user) => user.uid === uid);
+            if (userIndex === -1) {
+                console.log("User not found!");
+                return null;
+            }
+            this.users[userIndex] = { ...this.users[userIndex], ...updatedUser };
+            console.log("User updated successfully!");
+            return this.users[userIndex];
+        } catch (error) {
+            console.log("Error while updating user!");
+            console.error(error);
+            return null;
+        };
+    };
+
+    public listAllUsers = (): User[] => {
+        console.log("Listing all users...");
+        try {
+            console.log("Users found!");
+            console.log(this.users);
+            return this.users;
+        } catch (error) {
+            console.log("Error while listing all users!");
+            console.error(error);
+            return [];
+        };
+    };
+
 
 };
 
@@ -236,7 +285,7 @@ export default userDatabase;
 // loginUser ✅
 // findOne ✅
 // findUserById ✅
-// deleteUser
-// updateUser
-// listAllUsers
-// findAll
+// deleteUser ✅
+// updateUser ✅
+// listAllUsers ✅
+// findAll ✅
