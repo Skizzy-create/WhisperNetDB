@@ -1,3 +1,5 @@
+// File: /d:/Projects/WhisperNetDB/src/server.ts
+
 import express, { Application } from 'express';
 import mainRoute from './routes/index.js'
 import userDatabase from './database/userDB.js';

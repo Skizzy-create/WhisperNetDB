@@ -31,11 +31,11 @@ class userDatabase {
             if (!fs.existsSync(this.dataPath)) {
                 await fs.promises.writeFile(this.dataPath, '[]');
                 console.log('Data file created successfully!');
-            }
+            };
         } catch (error) {
             console.error('Error ensuring data file exists:', error);
             throw error;
-        }
+        };
     };
     public loadUsers = async (): Promise<void> => {
         try {
@@ -73,7 +73,7 @@ class userDatabase {
         } catch (error) {
             console.error('Error in loadUsers:', error);
             throw error;
-        }
+        };
     };
 
     private checkDuplicateUser = (username: string,): boolean => {
@@ -92,7 +92,7 @@ class userDatabase {
             console.log("Error while chec   king for duplicate users!");
             console.error(error);
             return true;
-        }
+        };
     };
 
     public createUser = async (username: string, password: string, dateOfJoining: Date, RoomId: string[]): Promise<User | null> => {

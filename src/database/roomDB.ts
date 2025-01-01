@@ -1,3 +1,5 @@
+// File: /d:/Projects/WhisperNetDB/src/database/roomDb.ts
+
 interface Room {
     roomId: string;
     roomName: string;
@@ -13,7 +15,6 @@ class roomDatabase {
         console.log("Room Database initialized!");
     };
 
-    // 
     private generateRoomId = (): string | null => {
         try {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

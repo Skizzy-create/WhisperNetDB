@@ -1,3 +1,5 @@
+// File: /d:/Projects/WhisperNetDB/src/auth/auth.ts
+
 import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "./authOps";
 import { JwtPayload } from "jsonwebtoken";
@@ -18,7 +20,7 @@ const authenticateToken = (req: Request, res: CustomResponse, next: NextFunction
             msg: "Unauthorized Access!"
         });
     };
-    const token = authHeader.split("")[1];
+    const token = authHeader.split(" ")[1];
     if (token === undefined || token === null) {
         return res.status(401).json({
             msg: "Unauthorized Access!"
