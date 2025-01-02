@@ -1,4 +1,4 @@
-// File: /d:/Projects/WhisperNetDB/src/routes/userRoutes.ts
+// ../WhisperNetDB/src/routes/userRoutes.ts
 
 import express from 'express';
 import { Request, Response, Router } from 'express';

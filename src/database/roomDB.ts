@@ -1,4 +1,4 @@
-// File: /d:/Projects/WhisperNetDB/src/database/roomDb.ts
+// ../WhisperNetDB/src/database/roomDb.ts
 
 interface Room {
     roomId: string;

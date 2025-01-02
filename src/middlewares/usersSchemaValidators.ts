@@ -1,4 +1,4 @@
-// File: /d:/Projects/WhisperNetDB/src/middlewares/usersSchemaValidators.ts
+// ../WhisperNetDB/src/middlewares/usersSchemaValidators.ts
 
 import { NextFunction, Request, Response } from "express";
 import { SafeParseReturnType } from "zod";

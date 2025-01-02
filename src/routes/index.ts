@@ -1,13 +1,13 @@
-// /d:/Projects/WhisperNetDB/src/routes/index.ts
+// ../WhisperNetDB/src/routes/index.ts
 
 import express, { Router } from "express";
-import userRouter from "./userRoutes.js";
+import userRouter from "./userRoutes";
 
 const router: Router = express.Router();
 
 router.use("/user", userRouter);
 
-router.get("/", (req, res) => {
+router.get("/", (_, res) => {
     res.json({
         msg: "Main Router"
     });

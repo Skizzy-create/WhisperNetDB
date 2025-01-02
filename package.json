@@ -1,13 +1,19 @@
 {
+  "type": "module",
   "name": "whispernetdb",
   "version": "1.0.0",
-  "description": "The backend of WhisperNet, comes with the in-memory DB for the whispertNet, and it is also a http server which get the requests for operations for whispernet",
+  "description": "The backend of WhisperNet, comes with the in-memory DB for the WhisperNet, and it is also an HTTP server that gets requests for operations for WhisperNet",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc -b && nodemon dist/server.js"
+    "dev": "tsc -b && nodemon dist/server.js",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:openHandles": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
-  "author": "Skizzy-Create (kartik Aslia)",
+  "author": "Skizzy-Create (Kartik Aslia)",
   "license": "Skizzy",
   "dependencies": {
     "@types/jsonstream-next": "^3.0.3",
@@ -20,9 +26,22 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-typescript": "^7.26.0",
+    "@jest/globals": "^29.7.0",
     "@types/bcrypt": "^5.0.2",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.0",
-    "@types/jsonwebtoken": "^9.0.7"
+    "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/node": "^20.17.11",
+    "@types/supertest": "^6.0.2",
+    "babel-jest": "^29.7.0",
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "^5.7.2"
   }
 }

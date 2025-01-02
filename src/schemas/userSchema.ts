@@ -1,4 +1,4 @@
-// /d:/Projects/WhisperNetDB/src/schemas/userSchema.ts
+// ../WhisperNetDB/src/schemas/userSchema.ts
 
 import zod from 'zod';
 

@@ -1,4 +1,4 @@
-// File: /d:/Projects/WhisperNet/src/util/generateUID.ts
+// ../WhisperNet/src/util/generateUID.ts
 
 import bcrypt from "bcrypt";
 

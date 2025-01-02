@@ -1,4 +1,4 @@
-// File: /d:/Projects/WhisperNetDB/src/auth/authOps.ts
+// ../WhisperNetDB/src/auth/authOps.ts
 
 import bcrypt from 'bcrypt';
 import jsonwebtoken, { JwtPayload } from 'jsonwebtoken';

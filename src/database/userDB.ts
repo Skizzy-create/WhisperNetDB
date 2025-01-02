@@ -1,8 +1,8 @@
-// /d:/Projects/WhisperNet/src/Database/userDB.ts
+// ../WhisperNet/src/Database/userDB.ts
 
 import fs from 'fs';
-import generateUID from "../util/generateUID.js";
-import { comparePassword, hashPassword } from "../auth/authOps.js";
+import generateUID from "../util/generateUID";
+import { comparePassword, hashPassword } from "../auth/authOps";
 import JSONStream from 'jsonstream-next';
 import { Transform } from 'stream';
 import { roomDB } from '../server.js';
@@ -97,23 +97,30 @@ class userDatabase {
 
     public createUser = async (username: string, password: string, dateOfJoining: Date, RoomId: string[]): Promise<User | null> => {
         console.log("Initializing Create User...");
-        if (this.checkDuplicateUser(username,)) {
-            console.log("Aborting user creation!");
+        try {
+            if (!password)
+                return null;
+            if (this.checkDuplicateUser(username,)) {
+                console.log("Aborting user creation!");
+                return null;
+            };
+            const hashedPassword = await hashPassword(password);
+            const hashedUid = await generateUID(username, password,);
+            const user: User = {
+                username, uid:
+                    hashedUid,
+                dateOfJoining,
+                RoomId,
+                password: hashedPassword
+            };
+            this.users.push(user);
+            console.log("User created successfully!");
+            // await this.logDataTofile();
+            return user;
+        } catch (error) {
+            console.log("Error creatingg user");
             return null;
-        };
-        const hashedPassword = await hashPassword(password);
-        const hashedUid = await generateUID(username, password,);
-        const user: User = {
-            username, uid:
-                hashedUid,
-            dateOfJoining,
-            RoomId,
-            password: hashedPassword
-        };
-        this.users.push(user);
-        console.log("User created successfully!");
-        // await this.logDataTofile();
-        return user;
+        }
     };
 
     public loginUser = async (username: string, password: string): Promise<string | null> => {

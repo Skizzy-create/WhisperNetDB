@@ -1,9 +1,9 @@
-// File: /d:/Projects/WhisperNetDB/src/server.ts
+// ../WhisperNetDB/src/server.ts
 
 import express, { Application } from 'express';
-import mainRoute from './routes/index.js'
-import userDatabase from './database/userDB.js';
-import roomDatabase from './database/roomDB.js';
+import mainRoute from './routes/index'
+import userDatabase from './database/userDB';
+import roomDatabase from './database/roomDB';
 
 const PORT = 8080
 const userDB = new userDatabase();
@@ -14,7 +14,7 @@ async function main() {
     app.use(express.json());
     app.use('/api/v1', mainRoute);
     app.use(express.urlencoded({ extended: true }));
-    app.get('/', (req, res) => {
+    app.get('/', (_, res) => {
         res.json({ msg: 'main page' });
     });
 

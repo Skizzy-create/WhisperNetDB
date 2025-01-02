@@ -1,4 +1,4 @@
-// File: /d:/Projects/WhisperNetDB/src/auth/auth.ts
+// ../WhisperNetDB/src/auth/auth.ts
 
 import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "./authOps";
