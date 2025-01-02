@@ -2,6 +2,8 @@
 
 **WhisperNetDB** is the backend database for the WhisperNet system, providing both an HTTP server and a WebSocket server to facilitate all data transfers and data management.
 
+![Test Status](https://github.com/skizzy-create/WhisperNetDB/actions/workflows/test.yml/badge.svg)
+
 ## Features
 
 - **HTTP Server**: Handles standard RESTful API requests for data management.
@@ -74,3 +76,4 @@ This will run the tests and generate a code coverage report, helping you track h
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
