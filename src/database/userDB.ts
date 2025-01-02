@@ -30,7 +30,6 @@ class userDatabase {
         try {
             if (!fs.existsSync(this.dataPath)) {
                 await fs.promises.writeFile(this.dataPath, '[]');
-                console.log('Data file created successfully!');
             };
         } catch (error) {
             console.error('Error ensuring data file exists:', error);
@@ -78,30 +77,25 @@ class userDatabase {
 
     private checkDuplicateUser = (username: string,): boolean => {
         try {
-            console.log("Checking for duplicate users...");
             const user = this.users.find((user) => user.username === username);
             if (user) {
                 console.log("User already exists!");
-                const { password, ...userWithoutPassword } = user;
-                console.log(userWithoutPassword);
                 return true;
             }
             console.log("User does not exist!");
             return false;
         } catch (error) {
-            console.log("Error while chec   king for duplicate users!");
+            console.log("Error while checking for duplicate users!");
             console.error(error);
             return true;
         };
     };
 
     public createUser = async (username: string, password: string, dateOfJoining: Date, RoomId: string[]): Promise<User | null> => {
-        console.log("Initializing Create User...");
         try {
             if (!password)
                 return null;
             if (this.checkDuplicateUser(username,)) {
-                console.log("Aborting user creation!");
                 return null;
             };
             const hashedPassword = await hashPassword(password);
@@ -114,8 +108,6 @@ class userDatabase {
                 password: hashedPassword
             };
             this.users.push(user);
-            console.log("User created successfully!");
-            // await this.logDataTofile();
             return user;
         } catch (error) {
             console.log("Error creatingg user");
@@ -139,13 +131,10 @@ class userDatabase {
 
     private fetchUserId = (username: string): string | null => {
         try {
-            console.log("Fetching user ID...");
             const userId = this.users.find((user) => user.username === username);
             if (userId) {
-                console.log("User ID found!");
                 return userId.uid;
             }
-            console.log("User ID not found!");
             return null;
         } catch (error) {
             console.log("Error fetching user ID");
@@ -154,7 +143,6 @@ class userDatabase {
     };
 
     public findOne = (criteria: Partial<User>, matchAll: boolean = true): Partial<User> | null => {
-        console.log("Looking for one user...");
         try {
             const user = this.users.find((user) => {
                 const conditions = [
@@ -180,7 +168,6 @@ class userDatabase {
     };
 
     private logDataTofile = async (): Promise<void> => {
-        console.log("Logging data to file...");
         const dataWithNewLines = JSON.stringify(this.users, null, 2);
         try {
             await fs.promises.writeFile('data.json', dataWithNewLines);
@@ -192,7 +179,6 @@ class userDatabase {
     };
 
     public findAll = (criterial: Partial<User>) => {
-        console.log("Finding all users...");
         try {
             const users = this.users.filter((user) => {
                 const conditions = [
@@ -214,7 +200,6 @@ class userDatabase {
     };
 
     public findUserById = (uid: string): User | null => {
-        console.log("Finding user by ID...");
         try {
             const user = this.users.find((user) => user.uid === uid);
             if (!user) {
@@ -232,7 +217,6 @@ class userDatabase {
     };
 
     public deleteUser = (uid: string): boolean => {
-        console.log("Deleting user...");
         try {
             const userIndex = this.users.findIndex((user) => user.uid === uid);
             if (userIndex === -1) {
@@ -250,7 +234,6 @@ class userDatabase {
     };
 
     public updateUser = (uid: string, updatedUser: Partial<User>): User | null => {
-        console.log("Updating user...");
         try {
             const userIndex = this.users.findIndex((user) => user.uid === uid);
             if (userIndex === -1) {

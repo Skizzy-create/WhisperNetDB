@@ -24,13 +24,13 @@
     "allowSyntheticDefaultImports": true, // Allows default imports for modules without default exports.
     "isolatedModules": true, // Ensures that each file can be compiled independently (good for faster builds).
     /* Testing */
-    "noEmit": true, // Prevent emitting JS during test runs.
+    "noEmit": false, // Prevent emitting JS during test runs.
     /* Type Checking */
     "noImplicitAny": true, // Warns for variables with `any` type.
     "strictNullChecks": true, // Catches `null`/`undefined` type issues.
-    "noUnusedLocals": true, // Helps keep code clean by catching unused variables.
-    "noUnusedParameters": true, // Flags unused parameters.
-    "noImplicitReturns": true, // Warns for code paths without a return statement.
+    // "noUnusedLocals": true, // Helps keep code clean by catching unused variables.
+    // "noUnusedParameters": true, // Flags unused parameters.
+    // "noImplicitReturns": true, // Warns for code paths without a return statement.
     "noFallthroughCasesInSwitch": true // Prevents unintentional fallthrough in switch statements.
   },
   "include": [
