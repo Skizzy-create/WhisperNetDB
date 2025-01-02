@@ -1,15 +1,20 @@
-// src/__tests__/routes/userRoutes.test.ts
+// src/__test__/routes/userRoutes.test.ts
 import request from 'supertest';
-import express from 'express';
-import userRouter from '../../routes/userRoutes';
+import { createApp } from '../../server';
+import { userDB } from '../../server';
+import { Application } from 'express';
 
 describe('User Routes', () => {
-    let app: express.Application;
+    let app: Application;
 
-    beforeEach(() => {
-        app = express();
-        app.use(express.json());
-        app.use('/api/v1/user', userRouter);
+    beforeAll(async () => {
+        app = await createApp();
+    });
+
+    beforeEach(async () => {
+        // Reset users before each test
+        const users = userDB.listAllUsers();
+        users.forEach(user => userDB.deleteUser(user.uid));
     });
 
     describe('POST /register', () => {
@@ -17,7 +22,7 @@ describe('User Routes', () => {
             const response = await request(app)
                 .post('/api/v1/user/register')
                 .send({
-                    username: 'testuser',
+                    username: 'newtestuser',
                     password: 'password123',
                     dateOfJoining: new Date().toISOString(),
                     RoomId: []
@@ -41,8 +46,8 @@ describe('User Routes', () => {
     });
 
     describe('POST /login', () => {
-        it('should login with valid credentials', async () => {
-            // First register a user
+        beforeEach(async () => {
+            // Create test user before each login test
             await request(app)
                 .post('/api/v1/user/register')
                 .send({
@@ -51,7 +56,9 @@ describe('User Routes', () => {
                     dateOfJoining: new Date().toISOString(),
                     RoomId: []
                 });
+        });
 
+        it('should login with valid credentials', async () => {
             const response = await request(app)
                 .post('/api/v1/user/login')
                 .send({
@@ -62,5 +69,11 @@ describe('User Routes', () => {
             expect(response.status).toBe(200);
             expect(response.body).toHaveProperty('Token');
         });
+    });
+
+    afterAll(async () => {
+        // Clean up after all tests
+        const users = userDB.listAllUsers();
+        users.forEach(user => userDB.deleteUser(user.uid));
     });
 });

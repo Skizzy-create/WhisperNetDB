@@ -1,15 +1,15 @@
 {
-  "type": "module",
+  "type": "commonjs",
   "name": "whispernetdb",
   "version": "1.0.0",
   "description": "The backend of WhisperNet, comes with the in-memory DB for the WhisperNet, and it is also an HTTP server that gets requests for operations for WhisperNet",
   "main": "server.js",
   "scripts": {
     "dev": "tsc -b && nodemon dist/server.js",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:watch": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:coverage": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
-    "test:openHandles": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
+    "test": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest ",
+    "test:watch": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:openHandles": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "build": "tsc",
     "start": "node dist/server.js"
   },

@@ -15,7 +15,7 @@ class roomDatabase {
         console.log("Room Database initialized!");
     };
 
-    public generateRoomId = (): string | null => {
+    private generateRoomId = (): string | null => {
         try {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             const length = 9;
@@ -38,11 +38,9 @@ class roomDatabase {
 
     private checkDuplicateRoom = (ROOMID: string, ROOMNAME: string): boolean | null => {
         try {
-            console.log("Checking duplicate room...");
             const room = this.rooms.find((room) => room.roomId === ROOMID || room.roomName === ROOMNAME);
             if (room) {
                 console.log("Room already exists!");
-                console.log("Room = ", room);
                 return true;
             };
             return false;
@@ -52,15 +50,13 @@ class roomDatabase {
         };
     };
 
-    public createRoomId = (ROOMNAME: string) => {
+    public createRoom = (ROOMNAME: string) => {
         try {
             const roomId = this.generateRoomId();
             if (!roomId) {
-                console.log("Error generating room id!");
                 return null;
             };
             if (this.checkDuplicateRoom(roomId, ROOMNAME)) {
-                console.log("Duplicate room found!");
                 return null;
             };
             const newRoom: Room = {
@@ -69,7 +65,6 @@ class roomDatabase {
                 dateOfCreation: new Date(),
             };
             this.rooms.push(newRoom);
-            console.log("Room created successfully!");
         } catch (error) {
             console.error("Error creating room id:", error);
             return null;

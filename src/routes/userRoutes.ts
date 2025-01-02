@@ -34,7 +34,7 @@ router.post('/register', validateUserSignUp, async (req: Request, res: Response)
                 msg: "Internal Server Error! -- User register Route",
             });
         };
-        res.json({
+        res.status(200).json({
             msg: "User created successfully!",
             user: user,
             Token: Token

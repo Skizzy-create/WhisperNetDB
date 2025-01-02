@@ -1,36 +1,28 @@
-export default {
+// src/jest.config.ts
+import type { Config } from '@jest/types';
+
+const config: Config.InitialOptions = {
     preset: 'ts-jest',
     testEnvironment: 'node',
-    extensionsToTreatAsEsm: ['.ts'],
-    transformIgnorePatterns: [
-        '/node_modules/(?!(your-esm-package|another-esm-package)/)',
-    ],
-    moduleNameMapper: {
-        '^@/(.*)$': '<rootDir>/src/$1', // Maps @/ to the src folder
-        '^(\\.{1,2}/.*)\\.js$': '$1',  // Fixes imports with .js extensions
-    },
+    moduleFileExtensions: ['ts', 'js'],
     transform: {
-        '^.+\\.[tj]sx?$': [
-            'babel-jest',
-            {
-                presets: [
-                    ['@babel/preset-env', { targets: { node: 'current' } }],
-                    '@babel/preset-typescript',
-                ],
-            },
-        ],
+        '^.+\\.ts$': 'ts-jest',
     },
     testMatch: [
-        "**/src/**/__test__/**/*.test.ts" // Matches test files in __test__ directories
+        '**/src/**/__test__/**/*.test.ts'
     ],
+    verbose: true,
+    forceExit: true,
+    clearMocks: true,
+    resetMocks: true,
+    restoreMocks: true,
+    setupFiles: ['<rootDir>/src/jest.setup.ts'],
     globals: {
         'ts-jest': {
             useESM: true,
         },
     },
-    verbose: true,
-    forceExit: true,
-    clearMocks: true,
-    resetMocks: true,
-    restoreMocks: true
+    testTimeout: 10000
 };
+
+export default config;

@@ -10,12 +10,10 @@ const TOKEN_SECRET = process.env.TOKEN_SECRET || "defaultTokenSecretsdknfkjsdnfs
 
 const hashPassword = async (password: string): Promise<string> => {
     try {
-        console.log("Hashing password...");
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         return hashedPassword;
     } catch (error) {
-        console.log("Error while hashing password");
         console.error(error);
         return "";
     };
@@ -25,7 +23,6 @@ const comparePassword = async (hashPassword: string, password: string): Promise<
     try {
         return await bcrypt.compare(password, hashPassword);
     } catch (error) {
-        console.log("Error while comparing password");
         console.error(error);
         return null;
     };
@@ -33,7 +30,6 @@ const comparePassword = async (hashPassword: string, password: string): Promise<
 
 const generateToken = (USERNAME: string, UID: string): string | null => {
     try {
-        console.log("Generating token...");
         const payload = {
             USERNAME,
             UID
