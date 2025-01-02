@@ -1,4 +1,4 @@
-# // .github/workflows/test.yml
+# .github/workflows/test.yml
 name: Run Tests
 
 on:
@@ -32,8 +32,3 @@ jobs:
 
     - name: Run tests
       run: npm test
-
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v4
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
