@@ -8,7 +8,7 @@ interface CustomResponse extends Response {
     user?: string | JwtPayload;
 };
 
-const authenticateToken = (req: Request, res: CustomResponse, next: NextFunction) => {
+export const authenticateToken = (req: Request, res: CustomResponse, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     if (authHeader === undefined || authHeader === null) {
         return res.status(401).json({

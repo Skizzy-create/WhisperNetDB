@@ -15,7 +15,7 @@ class roomDatabase {
         console.log("Room Database initialized!");
     };
 
-    private generateRoomId = (): string | null => {
+    public generateRoomId = (): string | null => {
         try {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             const length = 9;
