@@ -49,9 +49,27 @@ class roomDatabase {
             return null;
         };
     };
+    private createRoomMiddelware = (ROOMNAME: string): boolean => {
+        try {
+            // checking if roomname is empty
+            if (!ROOMNAME) return false;
 
+            // checking if roomname is greater than 256 characters
+            if (ROOMNAME.length > 256) return false;
+
+            // checking if roomname with leading and trailing spaces
+            if (ROOMNAME.trim().length === 0) return false;
+
+            return true;
+        } catch (error) {
+            console.error("Error creating room middleware:", error);
+            return false;
+        };
+    }
     public createRoom = (ROOMNAME: string) => {
         try {
+            if (!this.createRoomMiddelware(ROOMNAME)) return null;
+
             const roomId = this.generateRoomId();
             if (!roomId) {
                 return null;
@@ -65,6 +83,8 @@ class roomDatabase {
                 dateOfCreation: new Date(),
             };
             this.rooms.push(newRoom);
+            return newRoom;
+
         } catch (error) {
             console.error("Error creating room id:", error);
             return null;
