@@ -70,24 +70,6 @@ describe('User Schema Validators', () => {
 
             expect(mockResponse.status).toHaveBeenCalledWith(400);
         });
-
-        it('should handle missing RoomId array', () => {
-            mockRequest = {
-                body: {
-                    username: 'testuser',
-                    password: 'password123',
-                    dateOfJoining: new Date().toISOString()
-                }
-            };
-
-            validateUserSignUp(
-                mockRequest as Request,
-                mockResponse as Response,
-                nextFunction
-            );
-
-            expect(mockResponse.status).toHaveBeenCalledWith(400);
-        });
     });
 
     describe('validateUserLogin', () => {

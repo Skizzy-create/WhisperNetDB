@@ -5,8 +5,8 @@ import { SafeParseReturnType } from "zod";
 import { createUserSchema, loginUserSchema } from "../schemas/userSchema";
 
 const validateUserSignUp = (req: Request, res: Response, next: NextFunction): any => {
-    const username = req.body.username;
-    const password = req.body.password;
+    const username = req.body.username.trim();
+    const password = req.body.password.trim();
     const dateOfJoining = new Date(req.body.dateOfJoining);
     const RoomId = req.body.RoomId;
 

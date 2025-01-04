@@ -1,6 +1,6 @@
 // src/__tests__/database/roomDB.test.ts
 // src/__tests__/database/roomDB.test.ts
-import roomDatabase from '../../database/roomDB';
+import roomDatabase, { Room } from '../../database/roomDB';
 
 describe('RoomDatabase', () => {
     let roomDB: roomDatabase;
@@ -59,7 +59,7 @@ describe('RoomDatabase', () => {
         it('should handle room name with leading/trailing spaces', () => {
             const result = roomDB.createRoom('  TestRoom  ');
             expect(result).not.toBeNull();
-            expect((result as any).name).toBe('TestRoom');
+            expect((result as Room).roomName).toBe('TestRoom');
         });
     });
 
