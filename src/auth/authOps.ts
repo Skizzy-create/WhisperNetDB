@@ -28,14 +28,14 @@ const comparePassword = async (hashPassword: string, password: string): Promise<
     };
 };
 
-const generateToken = (USERNAME: string, UID: string): string | null => {
+const generateToken = (USERNAME: string, UID: string, expiresIn: string = "10h"): string | null => {
     try {
         const payload = {
             USERNAME,
             UID
         };
         const token = jsonwebtoken.sign(payload, TOKEN_SECRET, {
-            expiresIn: '10h'
+            expiresIn
         });
 
         return token;

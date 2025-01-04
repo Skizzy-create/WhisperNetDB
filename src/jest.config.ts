@@ -1,4 +1,3 @@
-// src/jest.config.ts
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
@@ -22,7 +21,11 @@ const config: Config.InitialOptions = {
             useESM: true,
         },
     },
-    testTimeout: 10000
+    testTimeout: 10000,
+    // Add these lines to silence console logs
+    silent: true,
+    // Or use this to be more specific about what to silence
+    // setupFilesAfterEnv: ['<rootDir>/src/jest.setup.ts']
 };
 
 export default config;

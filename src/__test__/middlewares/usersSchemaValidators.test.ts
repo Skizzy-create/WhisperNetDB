@@ -1,4 +1,3 @@
-
 // src/__tests__/middlewares/usersSchemaValidators.test.ts
 import { Request, Response } from 'express';
 import { validateUserSignUp, validateUserLogin } from '../../middlewares/usersSchemaValidators';
@@ -52,6 +51,43 @@ describe('User Schema Validators', () => {
 
             expect(mockResponse.status).toHaveBeenCalledWith(400);
         });
+
+        it('should reject username with only spaces', () => {
+            mockRequest = {
+                body: {
+                    username: '   ',
+                    password: 'password123',
+                    dateOfJoining: new Date().toISOString(),
+                    RoomId: []
+                }
+            };
+
+            validateUserSignUp(
+                mockRequest as Request,
+                mockResponse as Response,
+                nextFunction
+            );
+
+            expect(mockResponse.status).toHaveBeenCalledWith(400);
+        });
+
+        it('should handle missing RoomId array', () => {
+            mockRequest = {
+                body: {
+                    username: 'testuser',
+                    password: 'password123',
+                    dateOfJoining: new Date().toISOString()
+                }
+            };
+
+            validateUserSignUp(
+                mockRequest as Request,
+                mockResponse as Response,
+                nextFunction
+            );
+
+            expect(mockResponse.status).toHaveBeenCalledWith(400);
+        });
     });
 
     describe('validateUserLogin', () => {
@@ -77,6 +113,23 @@ describe('User Schema Validators', () => {
                 body: {
                     username: 'test',
                     password: 'short'
+                }
+            };
+
+            validateUserLogin(
+                mockRequest as Request,
+                mockResponse as Response,
+                nextFunction
+            );
+
+            expect(mockResponse.status).toHaveBeenCalledWith(400);
+        });
+
+        it('should reject password with only spaces', () => {
+            mockRequest = {
+                body: {
+                    username: 'testuser',
+                    password: '    '
                 }
             };
 

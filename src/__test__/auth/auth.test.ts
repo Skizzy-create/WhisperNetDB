@@ -62,4 +62,39 @@ describe('Authentication Middleware', () => {
 
         expect(mockResponse.status).toHaveBeenCalledWith(401);
     });
+
+    it('should reject expired token', () => {
+        const token = generateToken('testuser', 'test-uid', '-1h');
+        mockRequest = {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        };
+
+        authenticateToken(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction
+        );
+
+        expect(mockResponse.status).toHaveBeenCalledWith(401);
+        expect(mockResponse.json).toHaveBeenCalledWith({ msg: 'Token expired' });
+    });
+
+    it('should reject malformed token', () => {
+        mockRequest = {
+            headers: {
+                authorization: 'Bearer invalid.jwt.token'
+            }
+        };
+
+        authenticateToken(
+            mockRequest as Request,
+            mockResponse as Response,
+            nextFunction
+        );
+
+        expect(mockResponse.status).toHaveBeenCalledWith(401);
+        expect(mockResponse.json).toHaveBeenCalledWith({ msg: 'Invalid token' });
+    });
 });

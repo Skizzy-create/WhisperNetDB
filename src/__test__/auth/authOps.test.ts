@@ -26,6 +26,24 @@ describe('Authentication Operations', () => {
 
             expect(isValid).toBe(false);
         });
+
+        it('should handle empty password', async () => {
+            const password = '';
+            const hashedPassword = await hashPassword(password);
+            expect(hashedPassword).not.toBe(password);
+        });
+
+        it('should handle very long password', async () => {
+            const password = 'a'.repeat(1000);
+            const hashedPassword = await hashPassword(password);
+            expect(hashedPassword).not.toBe(password);
+        });
+
+        it('should handle special characters in password', async () => {
+            const password = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            const hashedPassword = await hashPassword(password);
+            expect(hashedPassword).not.toBe(password);
+        });
     });
 
     describe('Token Operations', () => {
@@ -55,6 +73,30 @@ describe('Authentication Operations', () => {
         it('should reject invalid token', () => {
             const decoded = verifyToken('invalid-token');
             expect(decoded).toBeNull();
+        });
+
+        it('should handle special characters in username', () => {
+            const username = 'test@user#123';
+            const uid = 'test-uid';
+            const token = generateToken(username, uid);
+            const decoded = verifyToken(token!);
+
+            expect(decoded).not.toBeNull();
+            if (typeof decoded === 'object' && decoded !== null) {
+                expect(decoded.USERNAME).toBe(username);
+            }
+        });
+
+        it('should generate token with custom expiration', () => {
+            const username = 'testUser';
+            const uid = 'test-uid';
+            const token = generateToken(username, uid, '2h');
+            const decoded = verifyToken(token!);
+
+            expect(decoded).not.toBeNull();
+            if (typeof decoded === 'object' && decoded !== null) {
+                expect(decoded.exp).toBeDefined();
+            }
         });
     });
 });
