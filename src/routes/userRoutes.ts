@@ -7,7 +7,7 @@ import { validateUserLogin, validateUserSignUp } from '../middlewares/usersSchem
 import { generateToken } from '../auth/authOps';
 const router: Router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", (_, res) => {
     res.json({
         msg: "User Router"
     });

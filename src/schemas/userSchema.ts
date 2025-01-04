@@ -13,7 +13,7 @@ import zod from 'zod';
 
 const createUserSchema = zod.object({
     username: zod.string().max(256).nonempty(),
-    password: zod.string().min(6),
+    password: zod.string().min(6).nonempty(),
     dateOfJoining: zod.date(),
     RoomId: zod.array(zod.string()).optional(),
 });

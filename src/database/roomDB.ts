@@ -4,7 +4,7 @@ interface Room {
     roomId: string;
     roomName: string;
     dateOfCreation: Date;
-    users?: string[];
+    users: string[];
 };
 
 class roomDatabase {
@@ -66,18 +66,19 @@ class roomDatabase {
     public createRoom = (ROOMNAME: string) => {
         try {
             if (!this.createRoomMiddelware(ROOMNAME)) return null;
-
+            const TROOMNAME = ROOMNAME.trim();
             const roomId = this.generateRoomId();
             if (!roomId) {
                 return null;
             };
-            if (this.checkDuplicateRoom(roomId, ROOMNAME)) {
+            if (this.checkDuplicateRoom(roomId, TROOMNAME)) {
                 return null;
             };
             const newRoom: Room = {
                 roomId: roomId,
-                roomName: ROOMNAME,
+                roomName: TROOMNAME,
                 dateOfCreation: new Date(),
+                users: []
             };
             this.rooms.push(newRoom);
             return newRoom;
