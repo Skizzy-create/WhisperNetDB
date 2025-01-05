@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "tsc -b && nodemon dist/server.js",
-    "test": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest ",
+    "test": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand",
     "test:watch": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:openHandles": "tsc -b && cross-env NODE_OPTIONS=--experimental-vm-modules jest --watch",
