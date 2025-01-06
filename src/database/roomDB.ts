@@ -1,5 +1,7 @@
 // ../WhisperNetDB/src/database/roomDb.ts
 
+import { userExists } from "../middlewares/roomDbMiddelwares";
+
 interface Room {
     roomId: string;
     roomName: string;
@@ -85,6 +87,43 @@ class roomDatabase {
 
         } catch (error) {
             console.error("Error creating room id:", error);
+            return null;
+        };
+    };
+
+    public addUserToRoom = (ROOMID: string, USERID: string): string | null => {
+        try {
+            if (!ROOMID || !USERID) {
+                console.log("Room or user id is empty!");
+                return null;
+            };
+            if (!userExists(USERID)) {
+                console.log("User does not exist");
+                return null;
+            };
+            const room = this.rooms.find((room) => room.roomId === ROOMID);
+            if (!room) {
+                console.log("Room does not exist!");
+                return null;
+            };
+            room.users.push(USERID);
+            return room.roomId;
+        } catch (error) {
+            console.error("Error adding user to room:", error);
+            return null;
+        };
+    };
+
+    public getRoomById = (ROOMID: string): Room | null => {
+        try {
+            if (!ROOMID) {
+                console.log("Room id is empty!");
+                return null;
+            };
+            const room = this.rooms.find((room) => room.roomId === ROOMID);
+            return room ? room : null;
+        } catch (error) {
+            console.error("Error getting room by id:", error);
             return null;
         };
     };
