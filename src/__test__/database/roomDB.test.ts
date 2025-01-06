@@ -1,12 +1,10 @@
 // src/__tests__/database/roomDB.test.ts
-// src/__tests__/database/roomDB.test.ts
-import roomDatabase, { Room } from '../../database/roomDB';
+import { Room, testRoomDB as roomDB } from '../../database/roomDB';
 
 describe('RoomDatabase', () => {
-    let roomDB: roomDatabase;
 
     beforeEach(() => {
-        roomDB = new roomDatabase();
+        roomDB.clearDatabase();
     });
 
     describe('createRoom', () => {

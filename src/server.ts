@@ -2,11 +2,10 @@
 import express, { Application } from 'express';
 import mainRoute from './routes/index'
 import userDatabase from './database/userDB';
-import roomDatabase from './database/roomDB';
+import { roomDB } from './database/roomDB';
 
 export const userDB = new userDatabase();
-export const roomDB = new roomDatabase();
-
+export { roomDB };
 export async function createApp(): Promise<Application> {
     const app: Application = express();
 
@@ -20,6 +19,13 @@ export async function createApp(): Promise<Application> {
 
     await userDB.loadUsers();
 
+    // create new room and add a user to it
+    const roomId = roomDB.createRoom('TestRoom');
+    //create user
+    const user = await userDB.createUser('TestUser', 'TestPassword', new Date(), []);
+    console.log("user created", user);
+    const added_roomId = roomDB.addUserToRoom(roomId.roomId, user.uid);
+    console.log("user added to room", added_roomId);
     return app;
 }
 
