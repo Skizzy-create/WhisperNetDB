@@ -5,9 +5,18 @@ import { Application } from 'express';
 
 describe('Server', () => {
     let app: Application;
+    let consoleSpy: jest.SpyInstance;
 
     beforeAll(async () => {
         app = await createApp();
+    });
+
+    beforeEach(() => {
+        consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
+    });
+
+    afterEach(() => {
+        consoleSpy.mockRestore();
     });
 
     describe('Base Route', () => {

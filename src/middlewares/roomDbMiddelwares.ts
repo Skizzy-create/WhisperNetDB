@@ -7,6 +7,7 @@ const userExists = (userId: string) => {
         if (userDB.findUserById(userId)) {
             return true;
         }
+        return false;
     } catch (e) {
         console.log("User does not exist");
         return false;

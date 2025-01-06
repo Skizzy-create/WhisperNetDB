@@ -1,13 +1,7 @@
 // src/database/roomDB.ts
 
 import { userExists } from "../middlewares/roomDbMiddelwares";
-
-export interface Room {
-    roomId: string;
-    roomName: string;
-    dateOfCreation: Date;
-    users: string[];
-}
+import { Room } from "../types/room";
 
 export class RoomDatabase {
     private rooms: Room[] = [];

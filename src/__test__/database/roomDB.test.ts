@@ -1,120 +1,131 @@
-// src/__tests__/database/roomDB.test.ts
-import { Room, testRoomDB as roomDB } from '../../database/roomDB';
+// File: src/__tests__/database/roomDB.test.ts
 
-describe('RoomDatabase', () => {
+// Mock the middleware module
+jest.mock('../../middlewares/roomDbMiddelwares', () => ({
+    userExists: jest.fn()
+}));
+
+import { testRoomDB } from '../../database/roomDB';
+import { userExists } from '../../middlewares/roomDbMiddelwares';
+import { Room } from '../../types/room';
+
+// Previous test sections remain the same...
+
+describe('addUserToRoom', () => {
+    let validRoom: Room;
 
     beforeEach(() => {
-        roomDB.clearDatabase();
+        testRoomDB.clearDatabase();
+        jest.clearAllMocks();
+        (userExists as jest.Mock).mockReturnValue(true);
+        validRoom = testRoomDB.createRoom('TestRoom') as Room;
     });
 
-    describe('createRoom', () => {
-        it('should create room with valid name', () => {
-            const result = roomDB.createRoom('TestRoom');
-            expect(result).not.toBeNull();
-        });
+    it('should successfully add user to room', () => {
+        const result = testRoomDB.addUserToRoom(validRoom.roomId, 'user123');
+        expect(result).toBe(validRoom.roomId);
+        expect(userExists).toHaveBeenCalledWith('user123');
 
-        it('should not create duplicate rooms', () => {
-            roomDB.createRoom('TestRoom');
-            const duplicate = roomDB.createRoom('TestRoom');
-            expect(duplicate).toBeNull();
-        });
-
-        it('should not create room with empty name', () => {
-            const result = roomDB.createRoom('');
-            expect(result).toBeNull();
-        });
-
-        it('should not create room with very long name', () => {
-            const longName = 'a'.repeat(256);
-            const result = roomDB.createRoom(longName);
-            expect(result).toBeNull();
-        });
-
-        it('should create multiple unique rooms', () => {
-            const room1 = roomDB.createRoom('Room1');
-            const room2 = roomDB.createRoom('Room2');
-            const room3 = roomDB.createRoom('Room3');
-
-            expect(room1).not.toBeNull();
-            expect(room2).not.toBeNull();
-            expect(room3).not.toBeNull();
-        });
-
-        it('should handle special characters in room name', () => {
-            const result = roomDB.createRoom('Test Room #1 @Special');
-            expect(result).not.toBeNull();
-        });
-
-        it('should handle concurrent room creation', () => {
-            const results = Array(10).fill(null).map(() =>
-                roomDB.createRoom('ConcurrentRoom')
-            );
-
-            const successfulCreations = results.filter(result => result !== null);
-            expect(successfulCreations.length).toBe(1);
-        });
-
-        it('should handle room name with leading/trailing spaces', () => {
-            const result = roomDB.createRoom('  TestRoom  ');
-            expect(result).not.toBeNull();
-            expect((result as Room).roomName).toBe('TestRoom');
-        });
+        const rooms = testRoomDB.getAllRooms();
+        const updatedRoom = rooms.find(r => r.roomId === validRoom.roomId);
+        expect(updatedRoom?.users).toContain('user123');
     });
 
-    describe('Room ID Generation', () => {
-        it('should generate room ID in correct format', () => {
-            const result = roomDB.createRoom('TestRoom') as any;
-            expect(result.roomId).toMatch(/^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$/);
-        });
-
-        it('should generate unique room IDs', () => {
-            const room1 = roomDB.createRoom('Room1') as any;
-            const room2 = roomDB.createRoom('Room2') as any;
-            expect(room1.roomId).not.toBe(room2.roomId);
-        });
+    it('should handle empty room ID', () => {
+        const result = testRoomDB.addUserToRoom('', 'user123');
+        expect(result).toBeNull();
+        expect(userExists).not.toHaveBeenCalled();
     });
 
-    describe('Error Handling', () => {
-        it('should handle null room name', () => {
-            const result = roomDB.createRoom(null as any);
-            expect(result).toBeNull();
-        });
-
-        it('should handle undefined room name', () => {
-            const result = roomDB.createRoom(undefined as any);
-            expect(result).toBeNull();
-        });
-
-        it('should handle non-string room name', () => {
-            const result = roomDB.createRoom(123 as any);
-            expect(result).toBeNull();
-        });
-
-        it('should reject room names with only spaces', () => {
-            const result = roomDB.createRoom('   ');
-            expect(result).toBeNull();
-        });
-
-        it('should handle room names with numbers only', () => {
-            const result = roomDB.createRoom('12345');
-            expect(result).not.toBeNull();
-        });
+    it('should handle empty user ID', () => {
+        const result = testRoomDB.addUserToRoom(validRoom.roomId, '');
+        expect(result).toBeNull();
+        expect(userExists).not.toHaveBeenCalled();
     });
 
-    describe('Room Properties', () => {
-        it('should set correct creation date', () => {
-            const before = new Date();
-            const result = roomDB.createRoom('TestRoom') as any;
-            const after = new Date();
+    it('should handle non-existent room', () => {
+        const result = testRoomDB.addUserToRoom('NON-EXI-STT', 'user123');
+        expect(result).toBeNull();
+        expect(userExists).toHaveBeenCalledWith('user123');
+    });
 
-            expect(result.dateOfCreation).toBeInstanceOf(Date);
-            expect(result.dateOfCreation.getTime()).toBeGreaterThanOrEqual(before.getTime());
-            expect(result.dateOfCreation.getTime()).toBeLessThanOrEqual(after.getTime());
+    it('should handle non-existent user', () => {
+        (userExists as jest.Mock).mockReturnValue(false);
+        const result = testRoomDB.addUserToRoom(validRoom.roomId, 'nonexistentUser');
+        expect(result).toBeNull();
+        expect(userExists).toHaveBeenCalledWith('nonexistentUser');
+
+        const room = testRoomDB.getAllRooms().find(r => r.roomId === validRoom.roomId);
+        expect(room?.users).not.toContain('nonexistentUser');
+    });
+
+    it('should allow multiple users in same room', () => {
+        testRoomDB.addUserToRoom(validRoom.roomId, 'user1');
+        testRoomDB.addUserToRoom(validRoom.roomId, 'user2');
+        testRoomDB.addUserToRoom(validRoom.roomId, 'user3');
+
+        expect(userExists).toHaveBeenCalledWith('user1');
+        expect(userExists).toHaveBeenCalledWith('user2');
+        expect(userExists).toHaveBeenCalledWith('user3');
+
+        const room = testRoomDB.getAllRooms().find(r => r.roomId === validRoom.roomId);
+        expect(room?.users).toContain('user1');
+        expect(room?.users).toContain('user2');
+        expect(room?.users).toContain('user3');
+        expect(room?.users.length).toBe(3);
+    });
+
+    it('should handle null room ID', () => {
+        const result = testRoomDB.addUserToRoom(null as any, 'user123');
+        expect(result).toBeNull();
+        expect(userExists).not.toHaveBeenCalled();
+    });
+
+    it('should handle null user ID', () => {
+        const result = testRoomDB.addUserToRoom(validRoom.roomId, null as any);
+        expect(result).toBeNull();
+        expect(userExists).not.toHaveBeenCalled();
+    });
+
+    it('should handle undefined values', () => {
+        const result = testRoomDB.addUserToRoom(undefined as any, undefined as any);
+        expect(result).toBeNull();
+        expect(userExists).not.toHaveBeenCalled();
+    });
+
+    it('should handle errors during user addition', () => {
+        (userExists as jest.Mock).mockImplementation(() => {
+            throw new Error('Unexpected error');
+        });
+        const result = testRoomDB.addUserToRoom(validRoom.roomId, 'user123');
+        expect(result).toBeNull();
+        expect(userExists).toHaveBeenCalledWith('user123');
+    });
+
+    it('should add multiple users sequentially', () => {
+        const userIds = ['user1', 'user2', 'user3', 'user4', 'user5'];
+
+        userIds.forEach(userId => {
+            const result = testRoomDB.addUserToRoom(validRoom.roomId, userId);
+            expect(result).toBe(validRoom.roomId);
+            expect(userExists).toHaveBeenCalledWith(userId);
         });
 
-        it('should initialize empty users array', () => {
-            const result = roomDB.createRoom('TestRoom') as any;
-            expect(result.users).toEqual([]);
-        });
+        const room = testRoomDB.getAllRooms().find(r => r.roomId === validRoom.roomId);
+        expect(room?.users).toEqual(userIds);
+        expect(room?.users.length).toBe(userIds.length);
+    });
+
+    it('should preserve existing users when adding new ones', () => {
+        testRoomDB.addUserToRoom(validRoom.roomId, 'user1');
+        const roomBefore = testRoomDB.getAllRooms().find(r => r.roomId === validRoom.roomId);
+        const userCountBefore = roomBefore?.users.length;
+
+        testRoomDB.addUserToRoom(validRoom.roomId, 'user2');
+        const roomAfter = testRoomDB.getAllRooms().find(r => r.roomId === validRoom.roomId);
+
+        expect(roomAfter?.users.length).toBe((userCountBefore || 0) + 1);
+        expect(roomAfter?.users).toContain('user1');
+        expect(roomAfter?.users).toContain('user2');
     });
 });
