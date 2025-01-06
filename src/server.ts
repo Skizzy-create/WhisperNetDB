@@ -25,9 +25,20 @@ export async function createApp(): Promise<Application> {
 
 if (process.env.NODE_ENV !== 'test') {
     const PORT = 8080;
-    createApp().then(app => {
+    (async () => {
+        /**
+         * Immediately Invoked Function Expression (IIFE) to create and initialize the application.
+         * 
+         * This function is executed immediately after it is defined, allowing for asynchronous
+         * operations to be performed before the rest of the code executes. The `await` keyword
+         * is used to wait for the `createApp` function to resolve, ensuring that the application
+         * is fully initialized before proceeding.
+         * 
+         * @returns {Promise<void>} A promise that resolves when the application is created.
+         */
+        const app = await createApp();
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
         });
-    });
+    })(); // Function is immediately invoked
 }
