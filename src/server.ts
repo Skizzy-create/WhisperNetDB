@@ -2,16 +2,22 @@
 import express, { Application } from 'express';
 import mainRoute from './routes/index'
 import userDatabase from './database/userDB';
-import { roomDB } from './database/roomDB';
+import { roomDatabase } from './database/roomDB';
+import { countRequest, countTime } from './util/logs';
+// import { roomDB } from './database/roomDB';
 
 export const userDB = new userDatabase();
-export { roomDB };
+export const roomDB = new roomDatabase();
+
+// export { roomDB };
 export async function createApp(): Promise<Application> {
     const app: Application = express();
 
     app.use(express.json());
     app.use('/api/v1', mainRoute);
     app.use(express.urlencoded({ extended: true }));
+    app.use(countRequest);
+    app.use(countTime);
 
     app.get('/', (_, res) => {
         res.json({ msg: 'main page' });

@@ -5,7 +5,6 @@ import generateUID from "../util/generateUID";
 import { comparePassword, hashPassword } from "../auth/authOps";
 import JSONStream from 'jsonstream-next';
 import { Transform } from 'stream';
-import { roomDB } from '../server.js';
 
 
 interface User {

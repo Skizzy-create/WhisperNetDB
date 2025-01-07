@@ -3,7 +3,7 @@
 import { userExists } from "../middlewares/roomDbMiddelwares";
 import { Room } from "../types/room";
 
-export class RoomDatabase {
+export class roomDatabase {
     private rooms: Room[] = [];
     private dataPathRooms: string = 'rooms.json';
 
@@ -113,8 +113,5 @@ export class RoomDatabase {
     }
 }
 
-// Production instance
-export const roomDB = new RoomDatabase();
-
 // Test instance
-export const testRoomDB = new RoomDatabase();
+export const testRoomDB = new roomDatabase();
