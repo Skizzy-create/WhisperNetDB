@@ -3,7 +3,6 @@
 import express from 'express';
 import { Request, Response, Router } from 'express';
 import { userDB } from '../server';
-import { validateUserLogin, validateUserSignUp } from '../middlewares/usersSchemaValidators';
 import { generateToken } from '../auth/authOps';
 import { inputValidator } from '../middlewares/universalSchemaValidator';
 import { createUserSchema, loginUserSchema } from '../schemas/userSchema';
