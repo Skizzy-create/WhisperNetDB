@@ -50,7 +50,7 @@ describe('User Routes', () => {
                     username: 'test'
                 });
 
-            expect(response.status).toBe(500);
+            expect(response.status).toBe(400);
         });
 
         it('should reject registration with invalid date format', async () => {

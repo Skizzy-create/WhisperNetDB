@@ -5,6 +5,8 @@ import { Request, Response, Router } from 'express';
 import { userDB } from '../server';
 import { validateUserLogin, validateUserSignUp } from '../middlewares/usersSchemaValidators';
 import { generateToken } from '../auth/authOps';
+import { inputValidator } from '../middlewares/universalSchemaValidator';
+import { createUserSchema, loginUserSchema } from '../schemas/userSchema';
 const router: Router = express.Router();
 
 router.get("/", (_, res) => {
@@ -13,7 +15,7 @@ router.get("/", (_, res) => {
     });
 });
 
-router.post('/register', validateUserSignUp, async (req: Request, res: Response): Promise<any> => {
+router.post('/register', inputValidator(createUserSchema), async (req: Request, res: Response): Promise<any> => {
     try {
         const username: string = req.body.username;
         const password = req.body.password;
@@ -48,7 +50,7 @@ router.post('/register', validateUserSignUp, async (req: Request, res: Response)
     };
 });
 
-router.post("/login", validateUserLogin, async (req: Request, res: Response): Promise<any> => {
+router.post("/login", inputValidator(loginUserSchema), async (req: Request, res: Response): Promise<any> => {
     try {
         const username = req.body.username;
         const password = req.body.password;

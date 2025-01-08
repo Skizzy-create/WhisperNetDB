@@ -4,6 +4,9 @@ import { ZodSchema } from "zod";
 const inputValidator = (schema: ZodSchema) => {
     return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
+            if (req.body.dateOfJoining) {
+                req.body.dateOfJoining = new Date(req.body.dateOfJoining);
+            }
             const isValid = schema.safeParse(req.body);
             if (!isValid.success) {
                 res.status(400).json({
@@ -16,7 +19,7 @@ const inputValidator = (schema: ZodSchema) => {
             next();
         } catch (e) {
             console.error(e);
-            res.status(500).json({
+            res.status(400).json({
                 msg: "Internal Server Error",
                 success: false,
             });
