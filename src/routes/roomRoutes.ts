@@ -1,6 +1,6 @@
 // ../src/routes/roomRoutes.ts
 
-import express, { Request, Response, Router } from 'express';
+import express, { Response, Router } from 'express';
 import { authenticateToken, CustomRequest, } from '../auth/auth';
 import { inputValidator } from '../middlewares/universalSchemaValidator';
 import { createRoomSchema } from '../schemas/roomSchemas';
@@ -29,6 +29,29 @@ roomRouter.post('/create', authenticateToken, inputValidator(createRoomSchema), 
         });
     } catch (error) {
         console.error('Error creating room:', error);
+        res.status(500).json({
+            msg: 'Internal Server Error'
+        });
+    };
+});
+
+roomRouter.post('/addUserToRoom', authenticateToken, async (req: CustomRequest, res: Response): Promise<any> => {
+    try {
+        const ROOMID = req.body.roomId;
+        const USERID = req.body.userId;
+
+        const added = roomDB.addUserToRoom(ROOMID, USERID);
+        if (!added) {
+            return res.status(400).json({
+                msg: 'Error adding user to room'
+            });
+        };
+        return res.status(200).json({
+            msg: 'User added to room successfully!',
+            roomId: ROOMID
+        });
+    } catch (error) {
+        console.error('Error adding user to room:', error);
         res.status(500).json({
             msg: 'Internal Server Error'
         });
