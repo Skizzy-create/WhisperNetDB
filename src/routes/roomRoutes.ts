@@ -58,4 +58,26 @@ roomRouter.post('/addUserToRoom', authenticateToken, async (req: CustomRequest, 
     };
 });
 
+roomRouter.post('/removeUserFromRoom', authenticateToken, async (req: CustomRequest, res: Response): Promise<any> => {
+    try {
+        const ROOMID = req.body.roomId;
+        const USERID = req.body.userId;
+
+        const removed = roomDB.removeUserFromRoom(ROOMID, USERID);
+        if (!removed) {
+            return res.status(400).json({
+                msg: 'Error removing user from room'
+            });
+        };
+        return res.status(200).json({
+            msg: 'User removed from room successfully!',
+            roomId: ROOMID
+        });
+    } catch (error) {
+        console.error('Error removing user from room:', error);
+        res.status(500).json({
+            msg: 'Internal Server Error'
+        });
+    };
+});
 export default roomRouter; 

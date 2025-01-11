@@ -105,7 +105,35 @@ export class roomDatabase {
         } catch (error) {
             console.error("Error adding user to room:", error);
             return null;
-        }
+        };
+    };
+
+    public removeUserFromRoom(ROOMID: string, USERID: string): string | null {
+        try {
+            if (!ROOMID || !USERID) {
+                console.log("Room or user id is empty!");
+                return null;
+            };
+            if (!userExists(USERID)) {
+                console.log("User does not exist!");
+                return null;
+            };
+            const room = this.rooms.find((room) => room.roomId === ROOMID);
+            if (!room) {
+                console.log("Room does not exist!");
+                return null;
+            };
+            const userIndex = room.users.indexOf(USERID);
+            if (userIndex === -1) {
+                console.log("User is not in the room!");
+                return null;
+            };
+            room.users.splice(userIndex, 1);
+            return room.roomId;
+        } catch (error) {
+            console.error("Error removing user from room:", error);
+            return null;
+        };
     }
 
     public getAllRooms(): Room[] {
