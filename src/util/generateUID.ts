@@ -15,4 +15,14 @@ const generateUID = async (USERNAME: string, PASSWORD: string, TYPE: "USER" = "U
     return hashedUID;
 }
 
+// comparing the hash inputs with hash to look for a match
+const compareUID = async (UID: string, USERNAME: string, PASSWORD: string, TYPE: "USER" = "USER"): Promise<boolean> => {
+    console.log("Comparing UID...");
+    const type = TYPE.toLowerCase();
+    const finalString = `${type}-${USERNAME.toLowerCase()}-${PASSWORD.toLowerCase()}`;
+    const result = await bcrypt.compare(finalString, UID);
+    console.log("UID Matched: ", result);
+    return result;
+}
+
 export default generateUID;

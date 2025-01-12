@@ -34,7 +34,7 @@ describe('User Routes', () => {
                     username: 'newtestuser',
                     password: 'password123',
                     dateOfJoining: new Date().toISOString(),
-                    RoomId: []
+                    RoomId: ""
                 });
 
             expect(response.status).toBe(200);
@@ -60,7 +60,7 @@ describe('User Routes', () => {
                     username: 'test',
                     password: 'password123',
                     dateOfJoining: 'invalid-date',
-                    RoomId: []
+                    RoomId: ""
                 });
 
             expect(response.status).toBe(400);
@@ -74,7 +74,7 @@ describe('User Routes', () => {
                     username: 'duplicateuser',
                     password: 'password123',
                     dateOfJoining: new Date().toISOString(),
-                    RoomId: []
+                    RoomId: ""
                 });
 
             // Duplicate registration
@@ -84,7 +84,7 @@ describe('User Routes', () => {
                     username: 'duplicateuser',
                     password: 'password123',
                     dateOfJoining: new Date().toISOString(),
-                    RoomId: []
+                    RoomId: ""
                 });
 
             expect(response.status).toBe(400);
@@ -101,7 +101,7 @@ describe('User Routes', () => {
                     username: 'logintest',
                     password: 'password123',
                     dateOfJoining: new Date().toISOString(),
-                    RoomId: []
+                    RoomId: ""
                 });
         });
 
@@ -168,7 +168,7 @@ describe('User Routes', () => {
                     username: 'errortest',
                     password: 'password123',
                     dateOfJoining: new Date().toISOString(),
-                    RoomId: []
+                    RoomId: ""
                 });
 
             expect(response.status).toBe(500);

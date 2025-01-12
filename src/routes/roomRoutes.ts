@@ -1,6 +1,6 @@
 // ../src/routes/roomRoutes.ts
 
-import express, { Response, Router } from 'express';
+import express, { Request, Response, Router } from 'express';
 import { authenticateToken, CustomRequest, } from '../auth/auth';
 import { inputValidator } from '../middlewares/universalSchemaValidator';
 import { createRoomSchema } from '../schemas/roomSchemas';
@@ -39,7 +39,14 @@ roomRouter.post('/create', authenticateToken, inputValidator(createRoomSchema), 
 roomRouter.post('/addUserToRoom', authenticateToken, async (req: CustomRequest, res: Response): Promise<any> => {
     try {
         const ROOMID: string = req.body.roomId;
-        const USERID: string = req.body.userId;
+        let USERID: string;
+        if (typeof req.user !== 'string' && 'UID' in req.user) {
+            USERID = req.user.UID;
+        } else {
+            return res.status(400).json({
+                msg: 'Expected user id in token'
+            });
+        };
 
         // Check if user exists
         const userExist = userDB.findUserById(USERID);
@@ -82,7 +89,14 @@ roomRouter.post('/addUserToRoom', authenticateToken, async (req: CustomRequest, 
 roomRouter.post('/removeUserFromRoom', authenticateToken, async (req: CustomRequest, res: Response): Promise<any> => {
     try {
         const ROOMID = req.body.roomId;
-        const USERID = req.body.userId;
+        let USERID: string;
+        if (typeof req.user !== 'string' && 'UID' in req.user) {
+            USERID = req.user.UID;
+        } else {
+            return res.status(400).json({
+                msg: 'Expected user id in token'
+            });
+        }
 
         const removed = roomDB.removeUserFromRoom(ROOMID, USERID);
         if (!removed) {
@@ -100,5 +114,21 @@ roomRouter.post('/removeUserFromRoom', authenticateToken, async (req: CustomRequ
             msg: 'Internal Server Error'
         });
     };
+});
+
+roomRouter.get("/all", authenticateToken, (_: Request, res: Response): any => {
+    try {
+        const rooms = roomDB.getAllRooms();
+        return res.status(200).json({
+            msg: "Rooms fetched successfully!",
+            rooms: rooms
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            msg: "Internal Server Error!",
+            error: error
+        });
+    }
 });
 export default roomRouter; 

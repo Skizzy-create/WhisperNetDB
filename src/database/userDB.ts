@@ -264,6 +264,8 @@ class userDatabase {
             return [];
         };
     };
+
+    // Todo: Add a method to add/ update user's room id
 };
 
 export default userDatabase;

@@ -6,6 +6,7 @@ import { userDB } from '../server';
 import { generateToken } from '../auth/authOps';
 import { inputValidator } from '../middlewares/universalSchemaValidator';
 import { createUserSchema, loginUserSchema } from '../schemas/userSchema';
+import { authenticateToken } from '../auth/auth';
 const router: Router = express.Router();
 
 router.get("/", (_, res) => {
@@ -78,6 +79,23 @@ router.post("/login", inputValidator(loginUserSchema), async (req: Request, res:
         });
     };
 
+});
+
+// remove in production
+router.get("/all", authenticateToken, async (_: Request, res: Response): Promise<any> => {
+    try {
+        const users = userDB.listAllUsers();
+        return res.status(200).json({
+            msg: "Users fetched successfully!",
+            users: users
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            msg: "Internal Server Error!",
+            error: error
+        });
+    }
 });
 
 export default router;
