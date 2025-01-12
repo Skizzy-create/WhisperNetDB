@@ -19,6 +19,23 @@ roomRouter.post('/create', authenticateToken, inputValidator(createRoomSchema), 
     try {
         const roomName = req.body.roomName;
         const newRoom = roomDB.createRoom(roomName);
+
+        let USERID: string;
+        if (typeof req.user !== 'string' && 'UID' in req.user) {
+            USERID = req.user.UID;
+        } else {
+            return res.status(400).json({
+                msg: 'Expected user id in token'
+            });
+        };
+
+        // Check if user exists
+        if (!userExists(USERID)) {
+            return res.status(400).json({
+                msg: 'User does not exist'
+            });
+        };
+
         if (newRoom === null) {
             return res.status(400).json({
                 msg: 'Room already exists or invalid data'
@@ -67,10 +84,19 @@ roomRouter.post('/addUserToRoom', authenticateToken, async (req: CustomRequest, 
         };
 
         // Add user to room
-        const added = roomDB.addUserToRoom(ROOMID, USERID);
-        if (!added) {
+        const userToRoom = roomDB.addUserToRoom(ROOMID, USERID);
+        if (!userToRoom) {
             return res.status(400).json({
                 msg: 'Error adding user to room'
+            });
+        };
+
+        const roomToUser = userDB.updateUserRoomId(USERID, ROOMID);
+        if (!roomToUser) {
+            return res.status(400).json({
+                msg: 'Error updating user room',
+                userToRoom,
+                roomToUser
             });
         };
 

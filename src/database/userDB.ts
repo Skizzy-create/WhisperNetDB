@@ -265,7 +265,24 @@ class userDatabase {
         };
     };
 
-    // Todo: Add a method to add/ update user's room id
+    // Todo: Add a method to add/ update user's room id.
+    public updateUserRoomId = (uid: string, roomId: string): string | null => {
+        try {
+            const userIndex = this.users.findIndex((user) => user.uid === uid);
+            if (userIndex === -1) {
+                console.log("User not found!");
+                return null;
+            };
+            this.users[userIndex].RoomId = roomId;
+            console.log("User room id updated successfully!");
+            return this.users[userIndex].uid;
+
+        } catch (error) {
+            console.log("Error while updating user room id!");
+            console.error(error);
+            return null;
+        };
+    };
 };
 
 export default userDatabase;

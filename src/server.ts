@@ -13,11 +13,12 @@ export const roomDB = new roomDatabase();
 export async function createApp(): Promise<Application> {
     const app: Application = express();
 
-    app.use(express.json());
-    app.use('/api/v1', mainRoute);
-    app.use(express.urlencoded({ extended: true }));
     app.use(countRequest);
     app.use(countTime);
+    app.use(express.json());
+
+    app.use('/api/v1', mainRoute);
+    app.use(express.urlencoded({ extended: true }));
 
     app.get('/', (_, res) => {
         res.json({ msg: 'main page' });
