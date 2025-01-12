@@ -6,13 +6,12 @@ import { comparePassword, hashPassword } from "../auth/authOps";
 import JSONStream from 'jsonstream-next';
 import { Transform } from 'stream';
 
-
 interface User {
     username: string;
     uid: string;
     password: string;
     dateOfJoining: Date;
-    RoomId?: string[];
+    RoomId?: string;
     socketId?: string;
 };
 
@@ -24,7 +23,6 @@ class userDatabase {
         console.log("User Database initialized!");
     };
 
-
     private ensureDataFileExists = async (): Promise<void> => {
         try {
             if (!fs.existsSync(this.dataPath)) {
@@ -35,17 +33,15 @@ class userDatabase {
             throw error;
         };
     };
+
     public loadUsers = async (): Promise<void> => {
         try {
             console.log("Loading users...");
-            // Check and create file if doesn't exist
             await this.ensureDataFileExists();
 
-            // Create read stream
             const readStream = fs.createReadStream(this.dataPath, { encoding: 'utf-8' });
-            const jsonStream = JSONStream.parse('*'); // Parse all top-level array elements
+            const jsonStream = JSONStream.parse('*');
 
-            // Process users in chunks
             const processingStream = new Transform({
                 objectMode: true,
                 transform: (user: User, _, callback) => {
@@ -54,7 +50,6 @@ class userDatabase {
                 }
             });
 
-            // Handle stream events
             return new Promise((resolve, reject) => {
                 readStream
                     .pipe(jsonStream)
@@ -74,7 +69,7 @@ class userDatabase {
         };
     };
 
-    private checkDuplicateUser = (username: string,): boolean => {
+    private checkDuplicateUser = (username: string): boolean => {
         try {
             const user = this.users.find((user) => user.username === username);
             if (user) {
@@ -90,18 +85,18 @@ class userDatabase {
         };
     };
 
-    public createUser = async (username: string, password: string, dateOfJoining: Date, RoomId: string[]): Promise<User | null> => {
+    public createUser = async (username: string, password: string, dateOfJoining: Date, RoomId?: string): Promise<User | null> => {
         try {
             if (!password)
                 return null;
-            if (this.checkDuplicateUser(username,)) {
+            if (this.checkDuplicateUser(username)) {
                 return null;
             };
             const hashedPassword = await hashPassword(password);
-            const hashedUid = await generateUID(username, password,);
+            const hashedUid = await generateUID(username, password);
             const user: User = {
-                username, uid:
-                    hashedUid,
+                username,
+                uid: hashedUid,
                 dateOfJoining,
                 RoomId,
                 password: hashedPassword
@@ -109,7 +104,7 @@ class userDatabase {
             this.users.push(user);
             return user;
         } catch (error) {
-            console.log("Error creatingg user");
+            console.log("Error creating user");
             return null;
         }
     };
@@ -149,6 +144,7 @@ class userDatabase {
                     criteria.uid ? user.uid === criteria.uid : true,
                     criteria.dateOfJoining ? user.dateOfJoining === criteria.dateOfJoining : true,
                     criteria.socketId ? user.socketId === criteria.socketId : true,
+                    criteria.RoomId ? user.RoomId === criteria.RoomId : true,
                 ];
                 return matchAll ? conditions.every(Boolean) : conditions.some(Boolean);
             });
@@ -177,14 +173,21 @@ class userDatabase {
         }
     };
 
-    public findAll = (criterial: Partial<User>) => {
+    public findAll = (criteria: Partial<User>) => {
         try {
+            // check if inputs are empty
+            if (Object.keys(criteria).length === 0) {
+                console.log("No criteria provided!");
+                return null;
+            };
+
             const users = this.users.filter((user) => {
                 const conditions = [
-                    criterial.username ? user.username === criterial.username : true,
-                    criterial.uid ? user.uid === criterial.uid : true,
-                    criterial.dateOfJoining ? user.dateOfJoining === criterial.dateOfJoining : true,
-                    criterial.socketId ? user.socketId === criterial.socketId : true,
+                    criteria.username ? user.username === criteria.username : true,
+                    criteria.uid ? user.uid === criteria.uid : true,
+                    criteria.dateOfJoining ? user.dateOfJoining === criteria.dateOfJoining : true,
+                    criteria.socketId ? user.socketId === criteria.socketId : true,
+                    criteria.RoomId ? user.RoomId === criteria.RoomId : true,
                 ];
                 return conditions.every(Boolean);
             });
@@ -222,7 +225,7 @@ class userDatabase {
                 console.log("User not found!");
                 return false;
             }
-            this.users.splice(userIndex, 1); // splice(starting index, number of elements to remove)
+            this.users.splice(userIndex, 1);
             console.log("User deleted successfully!");
             return true;
         } catch (error) {
@@ -261,20 +264,6 @@ class userDatabase {
             return [];
         };
     };
-
-
 };
 
 export default userDatabase;
-
-// Function names from the UserDatabase class
-// checkDuplicateUser ✅
-// createUser ✅
-// fetchUserId ✅
-// loginUser ✅
-// findOne ✅
-// findUserById ✅
-// deleteUser ✅
-// updateUser ✅
-// listAllUsers ✅
-// findAll ✅

@@ -28,7 +28,7 @@ export async function createApp(): Promise<Application> {
     // create new room and add a user to it
     const roomId = roomDB.createRoom('TestRoom');
     //create user
-    const user = await userDB.createUser('TestUser', 'TestPassword', new Date(), []);
+    const user = await userDB.createUser('TestUser', 'TestPassword', new Date(), "");
     console.log("user created", user);
     const added_roomId = roomDB.addUserToRoom(roomId.roomId, user.uid);
     console.log("user added to room", added_roomId);

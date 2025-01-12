@@ -4,7 +4,8 @@ import express, { Response, Router } from 'express';
 import { authenticateToken, CustomRequest, } from '../auth/auth';
 import { inputValidator } from '../middlewares/universalSchemaValidator';
 import { createRoomSchema } from '../schemas/roomSchemas';
-import { roomDB } from '../server';
+import { roomDB, userDB } from '../server';
+import { userExists } from '../middlewares/roomDbMiddelwares';
 
 const roomRouter: Router = express.Router();
 
@@ -37,15 +38,35 @@ roomRouter.post('/create', authenticateToken, inputValidator(createRoomSchema), 
 
 roomRouter.post('/addUserToRoom', authenticateToken, async (req: CustomRequest, res: Response): Promise<any> => {
     try {
-        const ROOMID = req.body.roomId;
-        const USERID = req.body.userId;
+        const ROOMID: string = req.body.roomId;
+        const USERID: string = req.body.userId;
 
+        // Check if user exists
+        const userExist = userDB.findUserById(USERID);
+        if (!userExist) {
+            return res.status(400).json({
+                msg: 'User does not exist'
+            });
+        };
+
+        // Check if user is already in a room
+        if (userExist.RoomId) {
+            if (userExist.RoomId === ROOMID) {
+                return res.status(400).json({
+                    msg: 'User is already in the room'
+                });
+            };
+            roomDB.removeUserFromRoom(userExist.RoomId, USERID);
+        };
+
+        // Add user to room
         const added = roomDB.addUserToRoom(ROOMID, USERID);
         if (!added) {
             return res.status(400).json({
                 msg: 'Error adding user to room'
             });
         };
+
         return res.status(200).json({
             msg: 'User added to room successfully!',
             roomId: ROOMID
