@@ -5,15 +5,7 @@ import generateUID from "../util/generateUID";
 import { comparePassword, hashPassword } from "../auth/authOps";
 import JSONStream from 'jsonstream-next';
 import { Transform } from 'stream';
-
-interface User {
-    username: string;
-    uid: string;
-    password: string;
-    dateOfJoining: Date;
-    RoomId?: string;
-    socketId?: string;
-};
+import { User } from '../types/user';
 
 class userDatabase {
     private users: User[] = [];
