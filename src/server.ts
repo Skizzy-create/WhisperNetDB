@@ -4,6 +4,7 @@ import mainRoute from './routes/index'
 import userDatabase from './database/userDB';
 import { roomDatabase } from './database/roomDB';
 import { countRequest, countTime } from './util/logs';
+import cors from 'cors';
 // import { roomDB } from './database/roomDB';
 
 export const userDB = new userDatabase();
@@ -12,7 +13,7 @@ export const roomDB = new roomDatabase();
 // export { roomDB };
 export async function createApp(): Promise<Application> {
     const app: Application = express();
-
+    // app.use(cors()); no need as only postman is used now
     app.use(countRequest);
     app.use(countTime);
     app.use(express.json());
