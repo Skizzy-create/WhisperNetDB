@@ -4,3 +4,4 @@ data.json
 scalable.txt
 dist
 coverage
+.env
